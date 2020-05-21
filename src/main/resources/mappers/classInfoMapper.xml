@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.dao.classInfoMapper">
+  <resultMap id="BaseResultMap" type="com.learn.model.classInfo">
+    <id column="classid" jdbcType="INTEGER" property="classid" />
+    <result column="classtitle" jdbcType="VARCHAR" property="classtitle" />
+    <result column="classabout" jdbcType="VARCHAR" property="classabout" />
+    <result column="medianame" jdbcType="VARCHAR" property="medianame" />
+    <result column="mediauri" jdbcType="VARCHAR" property="mediauri" />
+    <result column="medialength" jdbcType="INTEGER" property="medialength" />
+    <result column="learnednum" jdbcType="INTEGER" property="learnednum" />
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="courseid" jdbcType="INTEGER" property="courseid" />
+    <result column="sectionid" jdbcType="INTEGER" property="sectionid" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+    <result column="value2" jdbcType="VARCHAR" property="value2" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    classid, classtitle, classabout, medianame, mediauri, medialength, learnednum, userid, 
+    courseid, sectionid, value1, value2
+  </sql>
+  
+    <select id="selectAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from class_info
+  </select>
+  
+   <select id="queryByPage" resultMap="BaseResultMap" parameterType="com.learn.model.classInfo">
+    SELECT
+    <include refid="Base_Column_List" />
+    from class_info
+    <where>
+     	<if test="classid != null and classid != ''">
+          AND classid = #{classid}
+        </if>
+        <if test="classtitle != null and classtitle != ''">
+          AND classtitle = #{classtitle}
+        </if>
+        <if test="classabout != null and classabout != ''">
+          AND classabout = #{classabout}
+        </if>
+        <if test="medianame != null and medianame != ''">
+          AND medianame = #{medianame}
+        </if>
+        <if test="mediauri != null and mediauri != ''">
+          AND mediauri = #{mediauri}
+        </if>
+        <if test="medialength != null and medialength != ''">
+          AND medialength = #{medialength}
+        </if>
+    	<if test="courseid != null and courseid != ''">
+         and courseid = #{courseid}
+        </if>
+        <if test="learnednum != null and learnednum != ''">
+          AND learnednum = #{learnednum}
+        </if>
+        <if test="userid != null and userid != ''">
+          AND userid = #{userid}
+        </if>
+         <if test="sectionid != null and sectionid != ''">
+          AND sectionid = #{sectionid}
+        </if>
+        <if test="value1 != null and value1 != ''">
+          AND value1 = #{value1}
+        </if>
+        <if test="value2 != null and value2 != ''">
+          AND value2 = #{value2}
+        </if> 
+    </where>
+  </select>
+  
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from class_info
+    where classid = #{classid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from class_info
+    where classid = #{classid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.learn.model.classInfo">
+    insert into class_info (classid, classtitle, classabout, 
+      medianame, mediauri, medialength, 
+      learnednum, userid, courseid, 
+      sectionid, value1, value2
+      )
+    values (#{classid,jdbcType=INTEGER}, #{classtitle,jdbcType=VARCHAR}, #{classabout,jdbcType=VARCHAR}, 
+      #{medianame,jdbcType=VARCHAR}, #{mediauri,jdbcType=VARCHAR}, #{medialength,jdbcType=INTEGER}, 
+      #{learnednum,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{courseid,jdbcType=INTEGER}, 
+      #{sectionid,jdbcType=INTEGER}, #{value1,jdbcType=VARCHAR}, #{value2,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+  <insert id="insertSelectiveReturnId" parameterType="com.learn.model.classInfo" useGeneratedKeys="true" keyProperty="classid">
+    insert into class_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="classid != null">
+        classid,
+      </if>
+      <if test="classtitle != null">
+        classtitle,
+      </if>
+      <if test="classabout != null">
+        classabout,
+      </if>
+      <if test="medianame != null">
+        medianame,
+      </if>
+      <if test="mediauri != null">
+        mediauri,
+      </if>
+      <if test="medialength != null">
+        medialength,
+      </if>
+      <if test="learnednum != null">
+        learnednum,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="courseid != null">
+        courseid,
+      </if>
+      <if test="sectionid != null">
+        sectionid,
+      </if>
+      <if test="value1 != null">
+        value1,
+      </if>
+      <if test="value2 != null">
+        value2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="classid != null">
+        #{classid,jdbcType=INTEGER},
+      </if>
+      <if test="classtitle != null">
+        #{classtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="classabout != null">
+        #{classabout,jdbcType=VARCHAR},
+      </if>
+      <if test="medianame != null">
+        #{medianame,jdbcType=VARCHAR},
+      </if>
+      <if test="mediauri != null">
+        #{mediauri,jdbcType=VARCHAR},
+      </if>
+      <if test="medialength != null">
+        #{medialength,jdbcType=INTEGER},
+      </if>
+      <if test="learnednum != null">
+        #{learnednum,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="courseid != null">
+        #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="sectionid != null">
+        #{sectionid,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        #{value2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.learn.model.classInfo">
+    insert into class_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="classid != null">
+        classid,
+      </if>
+      <if test="classtitle != null">
+        classtitle,
+      </if>
+      <if test="classabout != null">
+        classabout,
+      </if>
+      <if test="medianame != null">
+        medianame,
+      </if>
+      <if test="mediauri != null">
+        mediauri,
+      </if>
+      <if test="medialength != null">
+        medialength,
+      </if>
+      <if test="learnednum != null">
+        learnednum,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="courseid != null">
+        courseid,
+      </if>
+      <if test="sectionid != null">
+        sectionid,
+      </if>
+      <if test="value1 != null">
+        value1,
+      </if>
+      <if test="value2 != null">
+        value2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="classid != null">
+        #{classid,jdbcType=INTEGER},
+      </if>
+      <if test="classtitle != null">
+        #{classtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="classabout != null">
+        #{classabout,jdbcType=VARCHAR},
+      </if>
+      <if test="medianame != null">
+        #{medianame,jdbcType=VARCHAR},
+      </if>
+      <if test="mediauri != null">
+        #{mediauri,jdbcType=VARCHAR},
+      </if>
+      <if test="medialength != null">
+        #{medialength,jdbcType=INTEGER},
+      </if>
+      <if test="learnednum != null">
+        #{learnednum,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="courseid != null">
+        #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="sectionid != null">
+        #{sectionid,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        #{value2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.learn.model.classInfo">
+    update class_info
+    <set>
+      <if test="classtitle != null">
+        classtitle = #{classtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="classabout != null">
+        classabout = #{classabout,jdbcType=VARCHAR},
+      </if>
+      <if test="medianame != null">
+        medianame = #{medianame,jdbcType=VARCHAR},
+      </if>
+      <if test="mediauri != null">
+        mediauri = #{mediauri,jdbcType=VARCHAR},
+      </if>
+      <if test="medialength != null">
+        medialength = #{medialength,jdbcType=INTEGER},
+      </if>
+      <if test="learnednum != null">
+        learnednum = #{learnednum,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="courseid != null">
+        courseid = #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="sectionid != null">
+        sectionid = #{sectionid,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        value1 = #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        value2 = #{value2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where classid = #{classid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.learn.model.classInfo">
+    update class_info
+    set classtitle = #{classtitle,jdbcType=VARCHAR},
+      classabout = #{classabout,jdbcType=VARCHAR},
+      medianame = #{medianame,jdbcType=VARCHAR},
+      mediauri = #{mediauri,jdbcType=VARCHAR},
+      medialength = #{medialength,jdbcType=INTEGER},
+      learnednum = #{learnednum,jdbcType=INTEGER},
+      userid = #{userid,jdbcType=INTEGER},
+      courseid = #{courseid,jdbcType=INTEGER},
+      sectionid = #{sectionid,jdbcType=INTEGER},
+      value1 = #{value1,jdbcType=VARCHAR},
+      value2 = #{value2,jdbcType=VARCHAR}
+    where classid = #{classid,jdbcType=INTEGER}
+  </update>
+</mapper>

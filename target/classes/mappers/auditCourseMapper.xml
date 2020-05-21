@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.dao.auditCourseMapper">
+  <resultMap id="BaseResultMap" type="com.learn.model.auditCourse">
+    <id column="auditid" jdbcType="INTEGER" property="auditid" />
+    <result column="atitle" jdbcType="VARCHAR" property="atitle" />
+    <result column="acontent" jdbcType="VARCHAR" property="acontent" />
+    <result column="afileuri" jdbcType="VARCHAR" property="afileuri" />
+    <result column="acreatetime" jdbcType="TIMESTAMP" property="acreatetime" />
+    <result column="ispass" jdbcType="BIT" property="ispass" />
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="courseid" jdbcType="INTEGER" property="courseid" />
+    <result column="auditorid" jdbcType="INTEGER" property="auditorid" />
+    <result column="a_advice" jdbcType="VARCHAR" property="aAdvice" />
+    <result column="a_replytime" jdbcType="TIMESTAMP" property="aReplytime" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+    <result column="value2" jdbcType="VARCHAR" property="value2" />
+    <association property="user" column="userid"
+			javaType="com.learn.model.User" select="com.learn.dao.UserMapper.selectByPrimaryKey" />
+	<association property="course" column="courseid"
+			javaType="com.learn.model.courseInfo" select="com.learn.dao.courseInfoMapper.selectByPrimaryKey" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    auditid, atitle, acontent, afileuri, acreatetime, ispass, userid, courseid, auditorid, 
+    a_advice as aAdvice, a_replytime as aReplytime, value1, value2
+  </sql>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from audit_course
+  </select>
+  
+   <select id="queryByPage" resultMap="BaseResultMap" parameterType="com.learn.model.auditCourse">
+    SELECT
+    <include refid="Base_Column_List" />
+    from audit_course
+    <trim prefix="where" prefixOverrides="and">
+    <if test="auditid !=null">and auditid = #{auditid}</if>
+    <if test="atitle !=null">and atitle like concat('%',#{atitle},'%')</if>
+    <if test="acontent !=null">and acontent = #{acontent}</if>
+    <if test="afileuri !=null">and afileuri = #{afileuri}</if>
+    <if test="acreatetime !=null">and acreatetime = #{acreatetime}</if>
+    <if test="ispass !=null">and ispass = #{ispass}</if>
+    <if test="userid !=null">and userid = #{userid}</if>
+    <if test="courseid !=null">and courseid = #{courseid}</if>
+    <if test="auditorid !=null">and auditorid = #{auditorid}</if>
+    <if test="aAdvice !=null">and a_advice = #{aAdvice}</if>
+    <if test="aReplytime !=null">and a_replytime = #{aReplytime}</if>
+    	<if test="value1 !=null">and value1 = #{value1}</if>
+    	<if test="value2 !=null">and value2 = #{value2}</if>
+    </trim>
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from audit_course
+    where auditid = #{auditid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from audit_course
+    where auditid = #{auditid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.learn.model.auditCourse">
+    insert into audit_course (auditid, atitle, acontent, 
+      afileuri, acreatetime, ispass, 
+      userid, courseid, auditorid, 
+      a_advice, a_replytime, value1, 
+      value2)
+    values (#{auditid,jdbcType=INTEGER}, #{atitle,jdbcType=VARCHAR}, #{acontent,jdbcType=VARCHAR}, 
+      #{afileuri,jdbcType=VARCHAR}, #{acreatetime,jdbcType=TIMESTAMP}, #{ispass,jdbcType=BIT}, 
+      #{userid,jdbcType=INTEGER}, #{courseid,jdbcType=INTEGER}, #{auditorid,jdbcType=INTEGER}, 
+      #{aAdvice,jdbcType=VARCHAR}, #{aReplytime,jdbcType=TIMESTAMP}, #{value1,jdbcType=VARCHAR}, 
+      #{value2,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.learn.model.auditCourse">
+    insert into audit_course
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="auditid != null">
+        auditid,
+      </if>
+      <if test="atitle != null">
+        atitle,
+      </if>
+      <if test="acontent != null">
+        acontent,
+      </if>
+      <if test="afileuri != null">
+        afileuri,
+      </if>
+      <if test="acreatetime != null">
+        acreatetime,
+      </if>
+      <if test="ispass != null">
+        ispass,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="courseid != null">
+        courseid,
+      </if>
+      <if test="auditorid != null">
+        auditorid,
+      </if>
+      <if test="aAdvice != null">
+        a_advice,
+      </if>
+      <if test="aReplytime != null">
+        a_replytime,
+      </if>
+      <if test="value1 != null">
+        value1,
+      </if>
+      <if test="value2 != null">
+        value2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="auditid != null">
+        #{auditid,jdbcType=INTEGER},
+      </if>
+      <if test="atitle != null">
+        #{atitle,jdbcType=VARCHAR},
+      </if>
+      <if test="acontent != null">
+        #{acontent,jdbcType=VARCHAR},
+      </if>
+      <if test="afileuri != null">
+        #{afileuri,jdbcType=VARCHAR},
+      </if>
+      <if test="acreatetime != null">
+        #{acreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ispass != null">
+        #{ispass,jdbcType=BIT},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="courseid != null">
+        #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="auditorid != null">
+        #{auditorid,jdbcType=INTEGER},
+      </if>
+      <if test="aAdvice != null">
+        #{aAdvice,jdbcType=VARCHAR},
+      </if>
+      <if test="aReplytime != null">
+        #{aReplytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        #{value2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.learn.model.auditCourse">
+    update audit_course
+    <set>
+      <if test="atitle != null">
+        atitle = #{atitle,jdbcType=VARCHAR},
+      </if>
+      <if test="acontent != null">
+        acontent = #{acontent,jdbcType=VARCHAR},
+      </if>
+      <if test="afileuri != null">
+        afileuri = #{afileuri,jdbcType=VARCHAR},
+      </if>
+      <if test="acreatetime != null">
+        acreatetime = #{acreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ispass != null">
+        ispass = #{ispass,jdbcType=BIT},
+      </if>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="courseid != null">
+        courseid = #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="auditorid != null">
+        auditorid = #{auditorid,jdbcType=INTEGER},
+      </if>
+      <if test="aAdvice != null">
+        a_advice = #{aAdvice,jdbcType=VARCHAR},
+      </if>
+      <if test="aReplytime != null">
+        a_replytime = #{aReplytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="value1 != null">
+        value1 = #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        value2 = #{value2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where auditid = #{auditid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.learn.model.auditCourse">
+    update audit_course
+    set atitle = #{atitle,jdbcType=VARCHAR},
+      acontent = #{acontent,jdbcType=VARCHAR},
+      afileuri = #{afileuri,jdbcType=VARCHAR},
+      acreatetime = #{acreatetime,jdbcType=TIMESTAMP},
+      ispass = #{ispass,jdbcType=BIT},
+      userid = #{userid,jdbcType=INTEGER},
+      courseid = #{courseid,jdbcType=INTEGER},
+      auditorid = #{auditorid,jdbcType=INTEGER},
+      a_advice = #{aAdvice,jdbcType=VARCHAR},
+      a_replytime = #{aReplytime,jdbcType=TIMESTAMP},
+      value1 = #{value1,jdbcType=VARCHAR},
+      value2 = #{value2,jdbcType=VARCHAR}
+    where auditid = #{auditid,jdbcType=INTEGER}
+  </update>
+</mapper>

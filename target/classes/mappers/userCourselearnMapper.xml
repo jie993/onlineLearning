@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.dao.userCourselearnMapper">
+  <resultMap id="BaseResultMap" type="com.learn.model.userCourselearn">
+    <id column="courseid" jdbcType="INTEGER" property="courseid" />
+    <id column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="urating" jdbcType="INTEGER" property="urating" />
+    <result column="coursescore" jdbcType="INTEGER" property="coursescore" />
+    <result column="learntime" jdbcType="INTEGER" property="learntime" />
+    <result column="homescore" jdbcType="INTEGER" property="homescore" />
+    <result column="commentnum" jdbcType="INTEGER" property="commentnum" />
+    <result column="ansquestionnum" jdbcType="INTEGER" property="ansquestionnum" />
+    <result column="downloadfilenum" jdbcType="INTEGER" property="downloadfilenum" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+    <result column="value2" jdbcType="VARCHAR" property="value2" />
+  </resultMap>
+  
+  <resultMap id="BaseResultMap2" type="com.learn.model.userCourselearn">
+    <id column="courseid" jdbcType="INTEGER" property="courseid" />
+    <id column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="urating" jdbcType="INTEGER" property="urating" />
+    <result column="coursescore" jdbcType="INTEGER" property="coursescore" />
+    <result column="learntime" jdbcType="INTEGER" property="learntime" />
+    <result column="homescore" jdbcType="INTEGER" property="homescore" />
+    <result column="commentnum" jdbcType="INTEGER" property="commentnum" />
+    <result column="ansquestionnum" jdbcType="INTEGER" property="ansquestionnum" />
+    <result column="downloadfilenum" jdbcType="INTEGER" property="downloadfilenum" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+    <result column="value2" jdbcType="VARCHAR" property="value2" />
+    <association property="user" column="userid"
+			javaType="com.learn.model.User" select="com.learn.dao.UserMapper.selectByPrimaryKey" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    courseid, userid, urating, coursescore, learntime, homescore, commentnum, ansquestionnum, 
+    downloadfilenum, value1, value2
+  </sql>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_course_learn
+  </select>
+  
+  <select id="selectByTeacher" resultMap="BaseResultMap2" parameterType="java.util.Map">
+  SELECT
+  <include refid="Base_Column_List" />
+  FROM user_course_learn
+  <where>
+  <if test="teacherid != null">
+  and courseid IN(SELECT courseid FROM course_info WHERE teacherid = #{teacherid} AND `status` = TRUE)
+  </if>
+  <if test="courseid != null and courseid != ''">
+  	AND courseid = #{courseid}
+  </if>
+  <if test="userid != null and userid !=''">
+    AND userid = #{userid}
+  </if>
+  </where>
+  </select>
+  
+  <select id="batchProcessList" parameterType="java.util.List" resultType="com.learn.model.userCourselearn">
+               select * from user_course_learn where userid in
+           <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                   #{item}       
+           </foreach>    
+  </select>
+  
+    <select id="queryByPage2" resultMap="BaseResultMap2" parameterType="com.learn.model.userCourselearn">
+    SELECT
+    <include refid="Base_Column_List" />
+    from user_course_learn
+    <where>
+    	<if test="courseid != null and courseid != ''">
+    		AND courseid = #{courseid}
+    	</if>
+    	<if test="userid != null and userid !=''">
+          	AND userid = #{userid}
+        </if>
+        <if test="urating != null and urating != ''">
+          	AND urating = #{urating}
+        </if>
+        <if test="learntime != null and learntime != ''">
+          	AND learntime = #{learntime}
+        </if>
+        <if test="homescore != null and homescore != ''">
+          	AND homescore = #{homescore}
+        </if>
+        <if test="commentnum != null and commentnum != ''">
+          	AND commentnum = #{commentnum}
+        </if>
+        <if test="ansquestionnum != null and ansquestionnum != ''">
+          	AND ansquestionnum = #{ansquestionnum}
+        </if>
+        <if test="downloadfilenum != null and downloadfilenum != ''">
+          	AND downloadfilenum = #{downloadfilenum}
+        </if>
+        <if test="value1 != null and value1 != ''">
+          	AND value1 = #{value1}
+        </if>
+        <if test="value2 != null and value2 != ''">
+          	AND value2 = #{value2}
+        </if>
+    </where>
+  </select>
+        
+  <select id="queryByPage" resultMap="BaseResultMap" parameterType="com.learn.model.userCourselearn">
+    SELECT
+    <include refid="Base_Column_List" />
+    from user_course_learn
+    <where>
+    <if test="userid != null and userid !=''">
+          AND userid = #{userid}
+        </if>
+    </where>
+    <!-- <where>
+        <if test="courseid != null and courseid != ''">
+          AND courseid = #{courseid}
+        </if>
+        <if test="userid != null and userid !=''">
+          AND userid = #{userid}
+        </if>
+        <if test="urating != null and urating != ''">
+          AND urating = #{urating}
+        </if>
+        <if test="learntime != null and learntime != ''">
+          AND learntime = #{learntime}
+        </if>
+        <if test="homescore != null and homescore != ''">
+          AND homescore = #{homescore}
+        </if>
+        <if test="commentnum != null and commentnum != ''">
+          AND commentnum = #{commentnum}
+        </if>
+        <if test="ansquestionnum != null and ansquestionnum != ''">
+          AND ansquestionnum = #{ansquestionnum}
+        </if>
+        <if test="downloadfilenum != null and downloadfilenum != ''">
+          AND downloadfilenum = #{downloadfilenum}
+        </if>
+        <if test="value1 != null and value1 != ''">
+          AND value1 = #{value1}
+        </if>
+        <if test="value2 != null and value2 != ''">
+          AND value2 = #{value2}
+        </if>
+　　</where> -->
+  </select>
+  
+  
+  <select id="selectByPrimaryKey" parameterType="com.learn.model.userCourselearnKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_course_learn
+    where courseid = #{courseid,jdbcType=INTEGER}
+      and userid = #{userid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.learn.model.userCourselearnKey">
+    delete from user_course_learn
+    where courseid = #{courseid,jdbcType=INTEGER}
+      and userid = #{userid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.learn.model.userCourselearn">
+    insert into user_course_learn (courseid, userid, urating, 
+      coursescore, learntime, homescore, 
+      commentnum, ansquestionnum, downloadfilenum, 
+      value1, value2)
+    values (#{courseid,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{urating,jdbcType=INTEGER}, 
+      #{coursescore,jdbcType=INTEGER}, #{learntime,jdbcType=INTEGER}, #{homescore,jdbcType=INTEGER}, 
+      #{commentnum,jdbcType=INTEGER}, #{ansquestionnum,jdbcType=INTEGER}, #{downloadfilenum,jdbcType=INTEGER}, 
+      #{value1,jdbcType=VARCHAR}, #{value2,jdbcType=VARCHAR})
+  </insert>
+  
+  <insert id="foreachInsertList" parameterType="java.util.List">
+    insert into user_course_learn
+    (courseid,userid)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (
+      #{item.courseid,jdbcType=INTEGER},
+       #{item.userid,jdbcType=INTEGER}
+      )
+    </foreach>
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.learn.model.userCourselearn">
+    insert into user_course_learn
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="courseid != null">
+        courseid,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="urating != null">
+        urating,
+      </if>
+      <if test="coursescore != null">
+        coursescore,
+      </if>
+      <if test="learntime != null">
+        learntime,
+      </if>
+      <if test="homescore != null">
+        homescore,
+      </if>
+      <if test="commentnum != null">
+        commentnum,
+      </if>
+      <if test="ansquestionnum != null">
+        ansquestionnum,
+      </if>
+      <if test="downloadfilenum != null">
+        downloadfilenum,
+      </if>
+      <if test="value1 != null">
+        value1,
+      </if>
+      <if test="value2 != null">
+        value2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="courseid != null">
+        #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="urating != null">
+        #{urating,jdbcType=INTEGER},
+      </if>
+      <if test="coursescore != null">
+        #{coursescore,jdbcType=INTEGER},
+      </if>
+      <if test="learntime != null">
+        #{learntime,jdbcType=INTEGER},
+      </if>
+      <if test="homescore != null">
+        #{homescore,jdbcType=INTEGER},
+      </if>
+      <if test="commentnum != null">
+        #{commentnum,jdbcType=INTEGER},
+      </if>
+      <if test="ansquestionnum != null">
+        #{ansquestionnum,jdbcType=INTEGER},
+      </if>
+      <if test="downloadfilenum != null">
+        #{downloadfilenum,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        #{value2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.learn.model.userCourselearn">
+    update user_course_learn
+    <set>
+      <if test="urating != null">
+        urating = #{urating,jdbcType=INTEGER},
+      </if>
+      <if test="coursescore != null">
+        coursescore = #{coursescore,jdbcType=INTEGER},
+      </if>
+      <if test="learntime != null">
+        learntime = #{learntime,jdbcType=INTEGER},
+      </if>
+      <if test="homescore != null">
+        homescore = #{homescore,jdbcType=INTEGER},
+      </if>
+      <if test="commentnum != null">
+        commentnum = #{commentnum,jdbcType=INTEGER},
+      </if>
+      <if test="ansquestionnum != null">
+        ansquestionnum = #{ansquestionnum,jdbcType=INTEGER},
+      </if>
+      <if test="downloadfilenum != null">
+        downloadfilenum = #{downloadfilenum,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        value1 = #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        value2 = #{value2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where courseid = #{courseid,jdbcType=INTEGER}
+      and userid = #{userid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.learn.model.userCourselearn">
+    update user_course_learn
+    set urating = #{urating,jdbcType=INTEGER},
+      coursescore = #{coursescore,jdbcType=INTEGER},
+      learntime = #{learntime,jdbcType=INTEGER},
+      homescore = #{homescore,jdbcType=INTEGER},
+      commentnum = #{commentnum,jdbcType=INTEGER},
+      ansquestionnum = #{ansquestionnum,jdbcType=INTEGER},
+      downloadfilenum = #{downloadfilenum,jdbcType=INTEGER},
+      value1 = #{value1,jdbcType=VARCHAR},
+      value2 = #{value2,jdbcType=VARCHAR}
+    where courseid = #{courseid,jdbcType=INTEGER}
+      and userid = #{userid,jdbcType=INTEGER}
+  </update>
+</mapper>

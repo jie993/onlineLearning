@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.dao.AnnouncementMapper">
+  <resultMap id="BaseResultMap" type="com.learn.model.Announcement">
+    <id column="annouid" jdbcType="INTEGER" property="annouid" />
+    <result column="annoutitle" jdbcType="VARCHAR" property="annoutitle" />
+    <result column="annoucontent" jdbcType="VARCHAR" property="annoucontent" />
+    <result column="afile" jdbcType="VARCHAR" property="afile" />
+    <result column="abrowsenum" jdbcType="INTEGER" property="abrowsenum" />
+    <result column="alimit" jdbcType="BIT" property="alimit" />
+    <result column="acreatetime" jdbcType="TIMESTAMP" property="acreatetime" />
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+    <result column="value2" jdbcType="VARCHAR" property="value2" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    annouid, annoutitle, annoucontent, afile, abrowsenum, alimit, acreatetime, userid, 
+    value1, value2
+  </sql>
+  
+    <select id="selectAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from announcement
+  </select>
+  
+   <select id="queryByPage" resultMap="BaseResultMap" parameterType="com.learn.model.Announcement">
+    SELECT
+    <include refid="Base_Column_List" />
+    from announcement
+    <where>
+        <if test="annouid != null and annouid != ''">
+          AND annouid = #{annouid}
+        </if>
+        <if test="annoutitle != null and annoutitle != ''">
+          AND annoutitle like concat('%',#{annoutitle},'%')
+        </if>
+        <if test="annoucontent != null and annoucontent != ''">
+          AND annoucontent = #{annoucontent}
+        </if>
+        <if test="afile != null and afile != ''">
+          AND afile = #{afile}
+        </if>
+        <if test="abrowsenum != null and abrowsenum != ''">
+          AND abrowsenum = #{abrowsenum}
+        </if>
+        <if test="alimit != null and alimit != ''">
+          AND alimit = #{alimit}
+        </if>
+        <if test="acreatetime != null and acreatetime != ''">
+          AND acreatetime = #{acreatetime}
+        </if>
+        <if test="userid != null and userid != ''">
+          AND userid = #{userid}
+        </if>
+        <if test="value1 != null and value1 != ''">
+          AND value1 = #{value1}
+        </if>
+        <if test="value2 != null and value2 != ''">
+          AND value2 = #{value2}
+        </if>
+        </where>
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from announcement
+    where annouid = #{annouid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from announcement
+    where annouid = #{annouid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.learn.model.Announcement">
+    insert into announcement (annouid, annoutitle, annoucontent, 
+      afile, abrowsenum, alimit, 
+      acreatetime, userid, value1, 
+      value2)
+    values (#{annouid,jdbcType=INTEGER}, #{annoutitle,jdbcType=VARCHAR}, #{annoucontent,jdbcType=VARCHAR}, 
+      #{afile,jdbcType=VARCHAR}, #{abrowsenum,jdbcType=INTEGER}, #{alimit,jdbcType=BIT}, 
+      #{acreatetime,jdbcType=TIMESTAMP}, #{userid,jdbcType=INTEGER}, #{value1,jdbcType=VARCHAR}, 
+      #{value2,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.learn.model.Announcement" useGeneratedKeys="true" keyProperty="annouid">
+    insert into announcement
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="annouid != null">
+        annouid,
+      </if>
+      <if test="annoutitle != null">
+        annoutitle,
+      </if>
+      <if test="annoucontent != null">
+        annoucontent,
+      </if>
+      <if test="afile != null">
+        afile,
+      </if>
+      <if test="abrowsenum != null">
+        abrowsenum,
+      </if>
+      <if test="alimit != null">
+        alimit,
+      </if>
+      <if test="acreatetime != null">
+        acreatetime,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="value1 != null">
+        value1,
+      </if>
+      <if test="value2 != null">
+        value2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="annouid != null">
+        #{annouid,jdbcType=INTEGER},
+      </if>
+      <if test="annoutitle != null">
+        #{annoutitle,jdbcType=VARCHAR},
+      </if>
+      <if test="annoucontent != null">
+        #{annoucontent,jdbcType=VARCHAR},
+      </if>
+      <if test="afile != null">
+        #{afile,jdbcType=VARCHAR},
+      </if>
+      <if test="abrowsenum != null">
+        #{abrowsenum,jdbcType=INTEGER},
+      </if>
+      <if test="alimit != null">
+        #{alimit,jdbcType=BIT},
+      </if>
+      <if test="acreatetime != null">
+        #{acreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        #{value2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.learn.model.Announcement" useGeneratedKeys="true" keyProperty="annouid">
+    update announcement
+    <set>
+      <if test="annoutitle != null">
+        annoutitle = #{annoutitle,jdbcType=VARCHAR},
+      </if>
+      <if test="annoucontent != null">
+        annoucontent = #{annoucontent,jdbcType=VARCHAR},
+      </if>
+      <if test="afile != null">
+        afile = #{afile,jdbcType=VARCHAR},
+      </if>
+      <if test="abrowsenum != null">
+        abrowsenum = #{abrowsenum,jdbcType=INTEGER},
+      </if>
+      <if test="alimit != null">
+        alimit = #{alimit,jdbcType=BIT},
+      </if>
+      <if test="acreatetime != null">
+        acreatetime = #{acreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        value1 = #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        value2 = #{value2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where annouid = #{annouid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.learn.model.Announcement">
+    update announcement
+    set annoutitle = #{annoutitle,jdbcType=VARCHAR},
+      annoucontent = #{annoucontent,jdbcType=VARCHAR},
+      afile = #{afile,jdbcType=VARCHAR},
+      abrowsenum = #{abrowsenum,jdbcType=INTEGER},
+      alimit = #{alimit,jdbcType=BIT},
+      acreatetime = #{acreatetime,jdbcType=TIMESTAMP},
+      userid = #{userid,jdbcType=INTEGER},
+      value1 = #{value1,jdbcType=VARCHAR},
+      value2 = #{value2,jdbcType=VARCHAR}
+    where annouid = #{annouid,jdbcType=INTEGER}
+  </update>
+</mapper>

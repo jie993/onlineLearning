@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.dao.UserMapper">
+  <resultMap id="BaseResultMap" type="com.learn.model.User">
+    <id column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="loginname" jdbcType="VARCHAR" property="loginname" />
+    <result column="realname" jdbcType="VARCHAR" property="realname" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="sex" jdbcType="BIT" property="sex" />
+    <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+    <result column="role" jdbcType="VARCHAR" property="role" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="introduceinfo" jdbcType="VARCHAR" property="introduceinfo" />
+    <result column="major" jdbcType="VARCHAR" property="major" />
+    <result column="logintime" jdbcType="TIMESTAMP" property="logintime" />
+    <result column="registertime" jdbcType="TIMESTAMP" property="registertime" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+    <result column="value2" jdbcType="VARCHAR" property="value2" />
+  </resultMap>
+	
+  <sql id="Base_Column_List">
+    userid, loginname, realname, password, sex, avatar, role, email, introduceinfo, major, 
+    logintime, registertime, value1, value2
+  </sql>
+  
+   <select id="selectByUseridList" parameterType="java.util.List" resultType="com.learn.model.User">
+               select * from user_info where userid in
+           <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                   #{item}       
+           </foreach>    
+  </select>
+  
+   <select id="selectAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_info
+  </select>
+  
+  <select id="selectUserNumByRole" parameterType="java.lang.String" resultType="java.util.Map">
+  select
+  count(*) as userNum
+  from user_info
+  <where>
+  <if test="_parameter != null and _parameter != ''">
+  role = #{role}
+  </if>
+  </where>
+  </select>
+  
+  <select id="selectByNameAndPsd" parameterType="com.learn.model.User" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_info
+    where loginname = #{loginname,jdbcType=VARCHAR}
+    and password = #{password,jdbcType=VARCHAR} 
+  </select>
+  
+  <select id="queryByPage" resultMap="BaseResultMap" parameterType="com.learn.model.User">
+    SELECT
+    <include refid="Base_Column_List" />
+    from user_info
+    <trim prefix="where" prefixOverrides="and">
+    	<if test="userid != null and userid !=''">
+    		and userid = #{userid}
+    	</if>
+    	<if test="loginname != null and loginname !=''">
+    		and loginname= #{loginname}
+    	</if>
+    	<if test="realname != null and realname !=''">
+    		and realname like concat('%',#{realname},'%')
+    	</if>
+    	<if test="password != null and password !=''">
+    		and password= #{password}
+    	</if>
+    	<if test="sex != null and sex !=''">
+    		and sex= #{sex}
+    	</if>
+    	<if test="avatar != null and avatar !=''">
+    		and avatar= #{avatar}
+    	</if>
+    	<if test="role != null and role !=''">
+    		and role= #{role}
+    	</if>
+    	<if test="email != null and email !=''">
+    		and email= #{email}
+    	</if>
+    	<if test="introduceinfo != null and introduceinfo !=''">
+    		and introduceinfo= #{introduceinfo}
+    	</if>
+    	<if test="major != null and major !=''">
+    		and major= #{major}
+    	</if>
+    	<if test="loginname != null and loginname !=''">
+    		and loginname= #{loginname}
+    	</if>
+    	<if test="logintime != null and logintime !=''">
+    		and logintime= #{logintime}
+    	</if>
+    	<if test="registertime != null and registertime !=''">
+    		and registertime= #{registertime}
+    	</if>
+    	<if test="value1 != null and value1 !=''">
+    		and value1= #{value1}
+    	</if>
+    	<if test="value2 != null and value2 !=''">
+    		and value2= #{value2}
+    	</if>
+    </trim>
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_info
+    where userid = #{userid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user_info
+    where userid = #{userid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.learn.model.User">
+    insert into user_info (userid, loginname, realname, 
+      password, sex, avatar, 
+      role, email, introduceinfo, 
+      major, logintime, registertime, 
+      value1, value2)
+    values (#{userid,jdbcType=INTEGER}, #{loginname,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{sex,jdbcType=BIT}, #{avatar,jdbcType=VARCHAR}, 
+      #{role,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{introduceinfo,jdbcType=VARCHAR}, 
+      #{major,jdbcType=VARCHAR}, #{logintime,jdbcType=TIMESTAMP}, #{registertime,jdbcType=TIMESTAMP}, 
+      #{value1,jdbcType=VARCHAR}, #{value2,jdbcType=VARCHAR})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.learn.model.User">
+    insert into user_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="loginname != null">
+        loginname,
+      </if>
+      <if test="realname != null">
+        realname,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="avatar != null">
+        avatar,
+      </if>
+      <if test="role != null">
+        role,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="introduceinfo != null">
+        introduceinfo,
+      </if>
+      <if test="major != null">
+        major,
+      </if>
+      <if test="logintime != null">
+        logintime,
+      </if>
+      <if test="registertime != null">
+        registertime,
+      </if>
+      <if test="value1 != null">
+        value1,
+      </if>
+      <if test="value2 != null">
+        value2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="loginname != null">
+        #{loginname,jdbcType=VARCHAR},
+      </if>
+      <if test="realname != null">
+        #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=BIT},
+      </if>
+      <if test="avatar != null">
+        #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null">
+        #{role,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="introduceinfo != null">
+        #{introduceinfo,jdbcType=VARCHAR},
+      </if>
+      <if test="major != null">
+        #{major,jdbcType=VARCHAR},
+      </if>
+      <if test="logintime != null">
+        #{logintime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="registertime != null">
+        #{registertime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        #{value2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.learn.model.User">
+    update user_info
+    <set>
+      <if test="loginname != null">
+        loginname = #{loginname,jdbcType=VARCHAR},
+      </if>
+      <if test="realname != null">
+        realname = #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=BIT},
+      </if>
+      <if test="avatar != null">
+        avatar = #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null">
+        role = #{role,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="introduceinfo != null">
+        introduceinfo = #{introduceinfo,jdbcType=VARCHAR},
+      </if>
+      <if test="major != null">
+        major = #{major,jdbcType=VARCHAR},
+      </if>
+      <if test="logintime != null">
+        logintime = #{logintime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="registertime != null">
+        registertime = #{registertime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="value1 != null">
+        value1 = #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        value2 = #{value2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where userid = #{userid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.learn.model.User">
+    update user_info
+    set loginname = #{loginname,jdbcType=VARCHAR},
+      realname = #{realname,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=BIT},
+      avatar = #{avatar,jdbcType=VARCHAR},
+      role = #{role,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      introduceinfo = #{introduceinfo,jdbcType=VARCHAR},
+      major = #{major,jdbcType=VARCHAR},
+      logintime = #{logintime,jdbcType=TIMESTAMP},
+      registertime = #{registertime,jdbcType=TIMESTAMP},
+      value1 = #{value1,jdbcType=VARCHAR},
+      value2 = #{value2,jdbcType=VARCHAR}
+    where userid = #{userid,jdbcType=INTEGER}
+  </update>
+</mapper>

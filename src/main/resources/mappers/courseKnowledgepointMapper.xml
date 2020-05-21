@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.dao.courseKnowledgepointMapper">
+  <resultMap id="BaseResultMap" type="com.learn.model.courseKnowledgepoint">
+    <id column="kpintoid" jdbcType="INTEGER" property="kpintoid" />
+    <result column="kpoint_name" jdbcType="VARCHAR" property="kpointName" />
+    <result column="kpoint_content" jdbcType="VARCHAR" property="kpointContent" />
+    <result column="kpoint_weight" jdbcType="INTEGER" property="kpointWeight" />
+    <result column="courseid" jdbcType="INTEGER" property="courseid" />
+    <result column="value" jdbcType="VARCHAR" property="value" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    kpintoid, kpoint_name, kpoint_content, kpoint_weight, courseid, value
+  </sql>
+  
+    <select id="selectAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from course_knowledgepoint
+  </select>
+  
+   <select id="queryByPage" resultMap="BaseResultMap" parameterType="com.learn.model.courseKnowledgepoint">
+    SELECT
+    <include refid="Base_Column_List" />
+    from course_knowledgepoint
+    <where>
+    <if test="kpintoid !=null and kpintoid !=''">
+    		AND kpintoid = #{kpintoid}
+    	</if>
+    	<if test="kpointName != null and kpointName != ''">
+          AND kpoint_name like concat('%',#{kpointName},'%')
+        </if>
+        <if test="kpointContent != null and kpointContent != ''">
+          AND kpoint_content = #{kpointContent}
+        </if>
+        <if test="kpointWeight != null and kpointWeight != ''">
+          AND kpoint_weight = #{kpointWeight}
+        </if>
+        <if test="courseid != null and courseid != ''">
+          AND courseid = #{courseid}
+        </if>
+        <if test="value != null and value != ''">
+          AND value = #{value}
+        </if>
+    </where>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from course_knowledgepoint
+    where kpintoid = #{kpintoid,jdbcType=INTEGER}
+  </select>
+  
+  <insert id="foreachInsertList" parameterType="java.util.List">
+    insert into course_knowledgepoint
+    (kpoint_name, kpoint_content, value, courseid)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (
+      #{item.kpointName,jdbcType=VARCHAR},
+       #{item.kpointContent,jdbcType=VARCHAR},
+       #{item.value,jdbcType=VARCHAR},
+       #{item.courseid,jdbcType=INTEGER}
+      )
+    </foreach>
+  </insert>
+  
+  <delete id="deleteByCourseId" parameterType="java.lang.Integer">
+    delete from course_knowledgepoint
+    where courseid = #{courseid,jdbcType=INTEGER}
+  </delete>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from course_knowledgepoint
+    where kpintoid = #{kpintoid,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="com.learn.model.courseKnowledgepoint">
+    insert into course_knowledgepoint (kpintoid, kpoint_name, kpoint_content, 
+      kpoint_weight, courseid, value
+      )
+    values (#{kpintoid,jdbcType=INTEGER}, #{kpointName,jdbcType=VARCHAR}, #{kpointContent,jdbcType=VARCHAR}, 
+      #{kpointWeight,jdbcType=INTEGER}, #{courseid,jdbcType=INTEGER}, #{value,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.learn.model.courseKnowledgepoint">
+    insert into course_knowledgepoint
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="kpintoid != null">
+        kpintoid,
+      </if>
+      <if test="kpointName != null">
+        kpoint_name,
+      </if>
+      <if test="kpointContent != null">
+        kpoint_content,
+      </if>
+      <if test="kpointWeight != null">
+        kpoint_weight,
+      </if>
+      <if test="courseid != null">
+        courseid,
+      </if>
+      <if test="value != null">
+        value,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="kpintoid != null">
+        #{kpintoid,jdbcType=INTEGER},
+      </if>
+      <if test="kpointName != null">
+        #{kpointName,jdbcType=VARCHAR},
+      </if>
+      <if test="kpointContent != null">
+        #{kpointContent,jdbcType=VARCHAR},
+      </if>
+      <if test="kpointWeight != null">
+        #{kpointWeight,jdbcType=INTEGER},
+      </if>
+      <if test="courseid != null">
+        #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="value != null">
+        #{value,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateWeightValue">
+  	update course_knowledgepoint
+  	<set>
+  	<if test="number == 1">
+  		kpoint_weight = kpoint_weight+1,
+  	</if>
+  	<if test="number == 2">
+  		kpoint_weight = kpoint_weight+2,
+  	</if>
+  	</set>
+  	where courseid = #{courseid,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.learn.model.courseKnowledgepoint">
+    update course_knowledgepoint
+    <set>
+      <if test="kpointName != null">
+        kpoint_name = #{kpointName,jdbcType=VARCHAR},
+      </if>
+      <if test="kpointContent != null">
+        kpoint_content = #{kpointContent,jdbcType=VARCHAR},
+      </if>
+      <if test="kpointWeight != null">
+        kpoint_weight = #{kpointWeight,jdbcType=INTEGER},
+      </if>
+      <if test="courseid != null">
+        courseid = #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="value != null">
+        value = #{value,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where kpintoid = #{kpintoid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.learn.model.courseKnowledgepoint">
+    update course_knowledgepoint
+    set kpoint_name = #{kpointName,jdbcType=VARCHAR},
+      kpoint_content = #{kpointContent,jdbcType=VARCHAR},
+      kpoint_weight = #{kpointWeight,jdbcType=INTEGER},
+      courseid = #{courseid,jdbcType=INTEGER},
+      value = #{value,jdbcType=VARCHAR}
+    where kpintoid = #{kpintoid,jdbcType=INTEGER}
+  </update>
+</mapper>

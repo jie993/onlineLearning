@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.dao.homeworkInfoMapper">
+  <resultMap id="BaseResultMap" type="com.learn.model.homeworkInfo">
+    <id column="wid" jdbcType="INTEGER" property="wid" />
+    <result column="wtitle" jdbcType="VARCHAR" property="wtitle" />
+    <result column="wcreatedate" jdbcType="TIMESTAMP" property="wcreatedate" />
+    <result column="wfinishdate" jdbcType="TIMESTAMP" property="wfinishdate" />
+    <result column="hits" jdbcType="INTEGER" property="hits" />
+    <result column="wcommitnum" jdbcType="INTEGER" property="wcommitnum" />
+    <result column="referfile" jdbcType="VARCHAR" property="referfile" />
+    <result column="courseid" jdbcType="INTEGER" property="courseid" />
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+    <result column="value2" jdbcType="VARCHAR" property="value2" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.learn.model.homeworkInfo">
+    <result column="wcontent" jdbcType="LONGVARCHAR" property="wcontent" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    wid, wtitle, wcreatedate, wfinishdate, hits, wcommitnum, referfile, courseid, userid, 
+    value1, value2
+  </sql>
+  <sql id="Blob_Column_List">
+    wcontent
+  </sql>
+  
+    <select id="selectAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from homework_info
+  </select>
+  
+   <select id="queryByPage" resultMap="BaseResultMap" parameterType="com.learn.model.homeworkInfo">
+    SELECT
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from homework_info
+    <where>
+    	<if test="wid != null and wid != ''">
+          AND wid = #{wid}
+        </if>
+        <if test="wtitle != null and wtitle != ''">
+          AND wtitle like concat ('%',#{wtitle},'%')
+        </if>
+        <if test="wcreatedate != null and wcreatedate != ''">
+          AND wcreatedate = #{wcreatedate}
+        </if>
+        <if test="wfinishdate != null and wfinishdate != ''">
+          AND wfinishdate = #{wfinishdate}
+        </if>
+        <if test="hits != null and hits != ''">
+          AND hits = #{hits}
+        </if>
+        <if test="wcommitnum != null and wcommitnum != ''">
+          AND wcommitnum = #{wcommitnum}
+        </if>
+        <if test="referfile != null and referfile != ''">
+          AND referfile = #{referfile}
+        </if>
+    	<if test="courseid != null and courseid !=''">
+    		AND courseid = #{courseid}
+    	</if>
+        <if test="userid != null and userid != ''">
+          AND userid = #{userid}
+        </if>
+        <if test="value1 != null and value1 != ''">
+          AND value1 = #{value1}
+        </if>
+        <if test="value2 != null and value2 != ''">
+          AND value2 = #{value2}
+        </if>
+    </where>
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from homework_info
+    where wid = #{wid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from homework_info
+    where wid = #{wid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.learn.model.homeworkInfo">
+    insert into homework_info (wid, wtitle, wcreatedate, 
+      wfinishdate, hits, wcommitnum, 
+      referfile, courseid, userid, 
+      value1, value2, wcontent
+      )
+    values (#{wid,jdbcType=INTEGER}, #{wtitle,jdbcType=VARCHAR}, #{wcreatedate,jdbcType=TIMESTAMP}, 
+      #{wfinishdate,jdbcType=TIMESTAMP}, #{hits,jdbcType=INTEGER}, #{wcommitnum,jdbcType=INTEGER}, 
+      #{referfile,jdbcType=VARCHAR}, #{courseid,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, 
+      #{value1,jdbcType=VARCHAR}, #{value2,jdbcType=VARCHAR}, #{wcontent,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.learn.model.homeworkInfo">
+    insert into homework_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="wid != null">
+        wid,
+      </if>
+      <if test="wtitle != null">
+        wtitle,
+      </if>
+      <if test="wcreatedate != null">
+        wcreatedate,
+      </if>
+      <if test="wfinishdate != null">
+        wfinishdate,
+      </if>
+      <if test="hits != null">
+        hits,
+      </if>
+      <if test="wcommitnum != null">
+        wcommitnum,
+      </if>
+      <if test="referfile != null">
+        referfile,
+      </if>
+      <if test="courseid != null">
+        courseid,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="value1 != null">
+        value1,
+      </if>
+      <if test="value2 != null">
+        value2,
+      </if>
+      <if test="wcontent != null">
+        wcontent,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="wid != null">
+        #{wid,jdbcType=INTEGER},
+      </if>
+      <if test="wtitle != null">
+        #{wtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="wcreatedate != null">
+        #{wcreatedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="wfinishdate != null">
+        #{wfinishdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="hits != null">
+        #{hits,jdbcType=INTEGER},
+      </if>
+      <if test="wcommitnum != null">
+        #{wcommitnum,jdbcType=INTEGER},
+      </if>
+      <if test="referfile != null">
+        #{referfile,jdbcType=VARCHAR},
+      </if>
+      <if test="courseid != null">
+        #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        #{value2,jdbcType=VARCHAR},
+      </if>
+      <if test="wcontent != null">
+        #{wcontent,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.learn.model.homeworkInfo">
+    update homework_info
+    <set>
+      <if test="wtitle != null">
+        wtitle = #{wtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="wcreatedate != null">
+        wcreatedate = #{wcreatedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="wfinishdate != null">
+        wfinishdate = #{wfinishdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="hits != null">
+        hits = #{hits,jdbcType=INTEGER},
+      </if>
+      <if test="wcommitnum != null">
+        wcommitnum = #{wcommitnum,jdbcType=INTEGER},
+      </if>
+      <if test="referfile != null">
+        referfile = #{referfile,jdbcType=VARCHAR},
+      </if>
+      <if test="courseid != null">
+        courseid = #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        value1 = #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        value2 = #{value2,jdbcType=VARCHAR},
+      </if>
+      <if test="wcontent != null">
+        wcontent = #{wcontent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where wid = #{wid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.learn.model.homeworkInfo">
+    update homework_info
+    set wtitle = #{wtitle,jdbcType=VARCHAR},
+      wcreatedate = #{wcreatedate,jdbcType=TIMESTAMP},
+      wfinishdate = #{wfinishdate,jdbcType=TIMESTAMP},
+      hits = #{hits,jdbcType=INTEGER},
+      wcommitnum = #{wcommitnum,jdbcType=INTEGER},
+      referfile = #{referfile,jdbcType=VARCHAR},
+      courseid = #{courseid,jdbcType=INTEGER},
+      userid = #{userid,jdbcType=INTEGER},
+      value1 = #{value1,jdbcType=VARCHAR},
+      value2 = #{value2,jdbcType=VARCHAR},
+      wcontent = #{wcontent,jdbcType=LONGVARCHAR}
+    where wid = #{wid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.learn.model.homeworkInfo">
+    update homework_info
+    set wtitle = #{wtitle,jdbcType=VARCHAR},
+      wcreatedate = #{wcreatedate,jdbcType=TIMESTAMP},
+      wfinishdate = #{wfinishdate,jdbcType=TIMESTAMP},
+      hits = #{hits,jdbcType=INTEGER},
+      wcommitnum = #{wcommitnum,jdbcType=INTEGER},
+      referfile = #{referfile,jdbcType=VARCHAR},
+      courseid = #{courseid,jdbcType=INTEGER},
+      userid = #{userid,jdbcType=INTEGER},
+      value1 = #{value1,jdbcType=VARCHAR},
+      value2 = #{value2,jdbcType=VARCHAR}
+    where wid = #{wid,jdbcType=INTEGER}
+  </update>
+</mapper>

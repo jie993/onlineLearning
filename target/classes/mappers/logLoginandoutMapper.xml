@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.dao.logLoginandoutMapper">
+  <resultMap id="BaseResultMap" type="com.learn.model.logLoginandout">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="logindate" jdbcType="TIMESTAMP" property="logindate" />
+    <result column="logoutdate" jdbcType="TIMESTAMP" property="logoutdate" />
+    <result column="clientIP" jdbcType="VARCHAR" property="clientip" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, userid, logindate, logoutdate, clientIP, value1
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from log_loginandout
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectByDate" resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List" />
+  from log_loginandout
+  <where>
+  <if test="userid != null and userid != ''">
+  and userid = #{userid}
+  </if>
+  <if test="startDate != null and startDate != ''">
+  and logindate <![CDATA[>=]]> #{startDate}
+  </if>
+  <if test="endDate != null and endDate != ''">
+  and logindate <![CDATA[<=]]> #{endDate}
+  </if>
+  </where>
+  </select>
+  
+  <select id="selectOnlineTime" resultType="java.util.Map">
+  SELECT IFNULL(onlineTime,0) as onlinetime,IFNULL(triggerCount,0) as loginnum, td.date as date from(
+SELECT
+	DATE_FORMAT(logindate, '%Y-%m-%d') triggerDay,
+	COUNT(id) triggerCount,
+	SUM(IF(logoutdate IS NULL,IF(sub_seconds>30,30,sub_seconds),TIMESTAMPDIFF(MINUTE,log_loginandout.logindate,log_loginandout.logoutdate)))AS onlineTime
+	FROM
+	(select A.*,TIMESTAMPDIFF(MINUTE,A.logindate,B.logindate) sub_seconds
+	from(
+    select a.*,(@i := @i + 1) as ord_num from log_loginandout a,(select @i := 1) d order by id,logindate
+	) as A LEFT JOIN (
+    select a.*,(@j := @j + 1) as ord_num from log_loginandout a,(select @j := 0) c order by id,logindate
+	)as B on A.ord_num=B.ord_num) log_loginandout 
+	<where>
+	<if test="userid != null">
+	AND userid = #{userid}
+	</if>
+	<if test="daynum != null">
+	AND logindate <![CDATA[>=]]> DATE_SUB(CURDATE(), INTERVAL #{daynum} DAY)
+	</if>
+	</where>
+	GROUP BY triggerDay
+	ORDER BY logindate
+) tt right join (select DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL n.id DAY), '%Y-%m-%d') as date from number n LIMIT #{daynum}) td on tt.triggerDay=td.date 
+group by td.date;
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from log_loginandout
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.learn.model.logLoginandout">
+    insert into log_loginandout (id, userid, logindate, 
+      logoutdate, clientIP, value1
+      )
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{logindate,jdbcType=TIMESTAMP}, 
+      #{logoutdate,jdbcType=TIMESTAMP}, #{clientip,jdbcType=VARCHAR}, #{value1,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.learn.model.logLoginandout">
+    insert into log_loginandout
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="logindate != null">
+        logindate,
+      </if>
+      <if test="logoutdate != null">
+        logoutdate,
+      </if>
+      <if test="clientip != null">
+        clientIP,
+      </if>
+      <if test="value1 != null">
+        value1,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="logindate != null">
+        #{logindate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="logoutdate != null">
+        #{logoutdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="clientip != null">
+        #{clientip,jdbcType=VARCHAR},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <!-- update abc set outdate=getdate() where id=(select top 1 id from abc where username='admin' order by id desc) -->
+  <update id="updateLogoutDate" parameterType="com.learn.model.logLoginandout">
+  	update log_loginandout
+  	set logoutdate = #{logoutdate,jdbcType=TIMESTAMP}
+  	where id=(
+  	select id from(
+  	select id from log_loginandout
+  	where userid = #{userid,jdbcType=INTEGER}
+  	order by id desc limit 1
+  	)log_loginandout
+  	)
+  </update>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.learn.model.logLoginandout">
+    update log_loginandout
+    <set>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="logindate != null">
+        logindate = #{logindate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="logoutdate != null">
+        logoutdate = #{logoutdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="clientip != null">
+        clientIP = #{clientip,jdbcType=VARCHAR},
+      </if>
+      <if test="value1 != null">
+        value1 = #{value1,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.learn.model.logLoginandout">
+    update log_loginandout
+    set userid = #{userid,jdbcType=INTEGER},
+      logindate = #{logindate,jdbcType=TIMESTAMP},
+      logoutdate = #{logoutdate,jdbcType=TIMESTAMP},
+      clientIP = #{clientip,jdbcType=VARCHAR},
+      value1 = #{value1,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

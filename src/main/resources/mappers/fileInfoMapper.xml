@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.dao.fileInfoMapper">
+  <resultMap id="BaseResultMap" type="com.learn.model.fileInfo">
+    <id column="fileid" jdbcType="INTEGER" property="fileid" />
+    <result column="fileuri" jdbcType="VARCHAR" property="fileuri" />
+    <result column="filesize" jdbcType="INTEGER" property="filesize" />
+    <result column="fileabout" jdbcType="VARCHAR" property="fileabout" />
+    <result column="fdownloadnum" jdbcType="INTEGER" property="fdownloadnum" />
+    <result column="filecreatetime" jdbcType="TIMESTAMP" property="filecreatetime" />
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="courseid" jdbcType="INTEGER" property="courseid" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+    <result column="value2" jdbcType="VARCHAR" property="value2" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    fileid, fileuri, filesize, fileabout, fdownloadnum, filecreatetime, userid, courseid, 
+    value1, value2
+  </sql>
+  
+    <select id="selectAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from file_info
+  </select>
+  
+   <select id="queryByPage" resultMap="BaseResultMap" parameterType="com.learn.model.fileInfo">
+    SELECT
+    <include refid="Base_Column_List" />
+    from file_info
+    <where>
+    	<if test="fileid != null">
+          AND fileid = #{fileid}
+        </if>
+        <if test="fileuri != null">
+          AND fileuri = #{fileuri}
+        </if>
+        <if test="filesize != null">
+          AND filesize = #{filesize}
+        </if> 
+        <if test="fileabout != null">
+          AND fileabout like concat ('%',#{fileabout},'%') 
+        </if>
+    	<if test="courseid != null">
+          AND courseid = #{courseid}
+        </if>
+        <if test="fdownloadnum != null">
+          AND fdownloadnum = #{fdownloadnum}
+        </if>
+        <if test="filecreatetime != null">
+          AND filecreatetime = #{filecreatetime}
+        </if>
+        <if test="userid != null">
+          AND userid = #{userid}
+        </if> 
+        <if test="value1 != null">
+          AND value1 = #{value1}
+        </if>
+        <if test="value2 != null">
+          AND value2 = #{value2}
+        </if>
+    </where>
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from file_info
+    where fileid = #{fileid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from file_info
+    where fileid = #{fileid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.learn.model.fileInfo">
+    insert into file_info (fileid, fileuri, filesize, 
+      fileabout, fdownloadnum, filecreatetime, 
+      userid, courseid, value1, 
+      value2)
+    values (#{fileid,jdbcType=INTEGER}, #{fileuri,jdbcType=VARCHAR}, #{filesize,jdbcType=INTEGER}, 
+      #{fileabout,jdbcType=VARCHAR}, #{fdownloadnum,jdbcType=INTEGER}, #{filecreatetime,jdbcType=TIMESTAMP}, 
+      #{userid,jdbcType=INTEGER}, #{courseid,jdbcType=INTEGER}, #{value1,jdbcType=VARCHAR}, 
+      #{value2,jdbcType=VARCHAR})
+  </insert>
+  
+  <insert id="insertSelectiveReturnId" parameterType="com.learn.model.fileInfo" useGeneratedKeys="true" keyProperty="fileid">
+  	insert into file_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fileid != null">
+        fileid,
+      </if>
+      <if test="fileuri != null">
+        fileuri,
+      </if>
+      <if test="filesize != null">
+        filesize,
+      </if>
+      <if test="fileabout != null">
+        fileabout,
+      </if>
+      <if test="fdownloadnum != null">
+        fdownloadnum,
+      </if>
+      <if test="filecreatetime != null">
+        filecreatetime,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="courseid != null">
+        courseid,
+      </if>
+      <if test="value1 != null">
+        value1,
+      </if>
+      <if test="value2 != null">
+        value2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fileid != null">
+        #{fileid,jdbcType=INTEGER},
+      </if>
+      <if test="fileuri != null">
+        #{fileuri,jdbcType=VARCHAR},
+      </if>
+      <if test="filesize != null">
+        #{filesize,jdbcType=INTEGER},
+      </if>
+      <if test="fileabout != null">
+        #{fileabout,jdbcType=VARCHAR},
+      </if>
+      <if test="fdownloadnum != null">
+        #{fdownloadnum,jdbcType=INTEGER},
+      </if>
+      <if test="filecreatetime != null">
+        #{filecreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="courseid != null">
+        #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        #{value2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.learn.model.fileInfo">
+    insert into file_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fileid != null">
+        fileid,
+      </if>
+      <if test="fileuri != null">
+        fileuri,
+      </if>
+      <if test="filesize != null">
+        filesize,
+      </if>
+      <if test="fileabout != null">
+        fileabout,
+      </if>
+      <if test="fdownloadnum != null">
+        fdownloadnum,
+      </if>
+      <if test="filecreatetime != null">
+        filecreatetime,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="courseid != null">
+        courseid,
+      </if>
+      <if test="value1 != null">
+        value1,
+      </if>
+      <if test="value2 != null">
+        value2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fileid != null">
+        #{fileid,jdbcType=INTEGER},
+      </if>
+      <if test="fileuri != null">
+        #{fileuri,jdbcType=VARCHAR},
+      </if>
+      <if test="filesize != null">
+        #{filesize,jdbcType=INTEGER},
+      </if>
+      <if test="fileabout != null">
+        #{fileabout,jdbcType=VARCHAR},
+      </if>
+      <if test="fdownloadnum != null">
+        #{fdownloadnum,jdbcType=INTEGER},
+      </if>
+      <if test="filecreatetime != null">
+        #{filecreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="courseid != null">
+        #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        #{value2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.learn.model.fileInfo">
+    update file_info
+    <set>
+      <if test="fileuri != null">
+        fileuri = #{fileuri,jdbcType=VARCHAR},
+      </if>
+      <if test="filesize != null">
+        filesize = #{filesize,jdbcType=INTEGER},
+      </if>
+      <if test="fileabout != null">
+        fileabout = #{fileabout,jdbcType=VARCHAR},
+      </if>
+      <if test="fdownloadnum != null">
+        fdownloadnum = #{fdownloadnum,jdbcType=INTEGER},
+      </if>
+      <if test="filecreatetime != null">
+        filecreatetime = #{filecreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="courseid != null">
+        courseid = #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        value1 = #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        value2 = #{value2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where fileid = #{fileid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.learn.model.fileInfo">
+    update file_info
+    set fileuri = #{fileuri,jdbcType=VARCHAR},
+      filesize = #{filesize,jdbcType=INTEGER},
+      fileabout = #{fileabout,jdbcType=VARCHAR},
+      fdownloadnum = #{fdownloadnum,jdbcType=INTEGER},
+      filecreatetime = #{filecreatetime,jdbcType=TIMESTAMP},
+      userid = #{userid,jdbcType=INTEGER},
+      courseid = #{courseid,jdbcType=INTEGER},
+      value1 = #{value1,jdbcType=VARCHAR},
+      value2 = #{value2,jdbcType=VARCHAR}
+    where fileid = #{fileid,jdbcType=INTEGER}
+  </update>
+</mapper>

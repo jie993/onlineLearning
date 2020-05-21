@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.dao.logSeevideoMapper">
+  <resultMap id="BaseResultMap" type="com.learn.model.logSeevideo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="classid" jdbcType="INTEGER" property="classid" />
+    <result column="currentTime" jdbcType="TIMESTAMP" property="currenttime" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, userid, classid, currentTime, value1
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from log_seevideo
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="queryByPage" parameterType="com.learn.model.logSeevideo" resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List"/>
+  <where>
+  <if test="id != null and id != ''">
+  and id = #{id}
+  </if>
+  <if test="userid != null and userid != ''">
+  and userid = #{userid}
+  </if>
+  <if test="classid != null and classid != ''">
+  and classid = #{classid}
+  </if>
+  <if test="currentTime != null and currentTime != ''">
+  and currentTime = #{currentTime}
+  </if>
+  <if test="value1 != null and value1 != ''">
+  and value1 = #{value1}
+  </if>
+  </where>
+  </select>
+  
+  <select id="selectByUseridAndClassid" parameterType="com.learn.model.logSeevideo" resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List"/>
+  from log_seevideo
+  where userid = #{userid,jdbcType=INTEGER}
+  and classid = #{classid,jdbcType=INTEGER}
+  order by id desc limit 1
+  </select>
+  
+  <select id="selectSeeVideoTime" resultType="java.util.Map">
+  SELECT 
+  COUNT(*)*10 as seetime 
+  FROM log_seevideo
+  <where>
+  <if test="userid != null">
+  AND userid = #{userid}
+  </if>
+  <if test="courseid != courseid">
+  AND classid in (select classid from class_info WHERE courseid = #{courseid})
+  </if>
+  </where>
+  </select>
+  
+  <select id="selectRecentlyData" resultType="java.util.Map">
+SELECT IFNULL(triggerCount,0) as seeVideoTime, td.date as date from(
+	SELECT
+		DATE_FORMAT(currentTime, '%Y-%m-%d') triggerDay,COUNT(id)*#{itemTime} triggerCount
+		FROM
+		log_seevideo
+	WHERE
+	userid = #{userid}
+	AND classid in (select classid from class_info WHERE courseid = #{courseid})
+	AND currentTime <![CDATA[>=]]> DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+	GROUP BY triggerDay
+	ORDER BY currentTime
+	) tt right join (select DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL n.id DAY), '%Y-%m-%d') as date from number n LIMIT  #{daynum}) td on tt.triggerDay=td.date 
+group by td.date;
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from log_seevideo
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.learn.model.logSeevideo">
+    insert into log_seevideo (id, userid, classid, 
+      currentTime, value1)
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{classid,jdbcType=INTEGER}, 
+      #{currenttime,jdbcType=TIMESTAMP}, #{value1,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.learn.model.logSeevideo">
+    insert into log_seevideo
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="classid != null">
+        classid,
+      </if>
+      <if test="currenttime != null">
+        currentTime,
+      </if>
+      <if test="value1 != null">
+        value1,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="classid != null">
+        #{classid,jdbcType=INTEGER},
+      </if>
+      <if test="currenttime != null">
+        #{currenttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.learn.model.logSeevideo">
+    update log_seevideo
+    <set>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="classid != null">
+        classid = #{classid,jdbcType=INTEGER},
+      </if>
+      <if test="currenttime != null">
+        currentTime = #{currenttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="value1 != null">
+        value1 = #{value1,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.learn.model.logSeevideo">
+    update log_seevideo
+    set userid = #{userid,jdbcType=INTEGER},
+      classid = #{classid,jdbcType=INTEGER},
+      currentTime = #{currenttime,jdbcType=TIMESTAMP},
+      value1 = #{value1,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

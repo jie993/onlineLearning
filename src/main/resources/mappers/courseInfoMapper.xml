@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.dao.courseInfoMapper">
+  <resultMap id="BaseResultMap" type="com.learn.model.courseInfo">
+    <id column="courseid" jdbcType="INTEGER" property="courseid" />
+    <result column="coursetitle" jdbcType="VARCHAR" property="coursetitle" />
+    <result column="cabout" jdbcType="VARCHAR" property="cabout" />
+    <result column="picture" jdbcType="VARCHAR" property="picture" />
+    <result column="studynum" jdbcType="INTEGER" property="studynum" />
+    <result column="categoryid" jdbcType="INTEGER" property="categoryid" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="courselength" jdbcType="INTEGER" property="courselength" />
+    <result column="createuserid" jdbcType="INTEGER" property="createuserid" />
+    <result column="teacherid" jdbcType="INTEGER" property="teacherid" />
+    <result column="coursecreatetime" jdbcType="TIMESTAMP" property="coursecreatetime" />
+    <result column="rating" jdbcType="DOUBLE" property="rating" />
+    <result column="isfinish" jdbcType="BIT" property="isfinish" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+    <result column="value2" jdbcType="VARCHAR" property="value2" />
+    <association property="teacher" column="teacherid"
+			javaType="com.learn.model.User" select="com.learn.dao.UserMapper.selectByPrimaryKey" />
+	<association property="category" column="categoryid"
+			javaType="com.learn.model.categoryCourse" select="com.learn.dao.categoryCourseMapper.selectByPrimaryKey" />
+  </resultMap>
+  
+  <resultMap id="BaseResultMap2" type="com.learn.model.courseInfo">
+    <id column="courseid" jdbcType="INTEGER" property="courseid" />
+    <result column="coursetitle" jdbcType="VARCHAR" property="coursetitle" />
+    <result column="cabout" jdbcType="VARCHAR" property="cabout" />
+    <result column="picture" jdbcType="VARCHAR" property="picture" />
+    <result column="studynum" jdbcType="INTEGER" property="studynum" />
+    <result column="categoryid" jdbcType="INTEGER" property="categoryid" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="courselength" jdbcType="INTEGER" property="courselength" />
+    <result column="createuserid" jdbcType="INTEGER" property="createuserid" />
+    <result column="teacherid" jdbcType="INTEGER" property="teacherid" />
+    <result column="coursecreatetime" jdbcType="TIMESTAMP" property="coursecreatetime" />
+    <result column="rating" jdbcType="DOUBLE" property="rating" />
+    <result column="isfinish" jdbcType="BIT" property="isfinish" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+    <result column="value2" jdbcType="VARCHAR" property="value2" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    courseid, coursetitle, cabout, picture, studynum, categoryid, status, courselength, 
+    createuserid, teacherid, coursecreatetime, rating, isfinish, value1, value2
+  </sql>
+  
+  <update id="updateAddStudyNum" parameterType="java.lang.Integer">
+  	update course_info
+  	set studynum = studynum+1
+  	where
+  	courseid = #{courseid}
+  </update>
+  
+  <select id="selectStudyNumRank" resultType="java.util.Map" parameterType="java.lang.Integer">
+  	select
+  	coursetitle,studynum
+  	from course_info
+  	where value1 = '公开课'
+	ORDER BY studynum
+	DESC
+	LIMIT #{limit}
+  </select>
+  
+  <select id="selectCourseNum" resultType="java.util.Map">
+  select COUNT(*) as courseNum from course_info
+  </select>
+  
+   <select id="selectAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from course_info
+  </select>
+  
+  <select id="selectHotCourseByKeyword" resultMap="BaseResultMap2" parameterType="java.lang.String">
+  select
+  <include refid="Base_Column_List" />
+  from course_info
+  <where>
+  <if test="_parameter  != null and _parameter  != ''">
+  and courseid in (SELECT distinct  courseid FROM course_knowledgepoint WHERE kpoint_name like concat('%',#{keyword},'%'))
+  </if>
+  </where>
+  </select>
+  
+  <!--不需要进行关系映射的查询  -->
+  <select id="queryByPage2" resultMap="BaseResultMap2" parameterType="com.learn.model.courseInfo">
+    SELECT
+    <include refid="Base_Column_List" />
+    from course_info
+    <where>
+    	<if test="courseid != null and courseid != ''">
+    	AND courseid = #{courseid}
+    	</if>
+    	<if test="coursetitle != null and coursetitle != ''">
+          AND coursetitle like concat('%',#{coursetitle},'%')
+        </if>
+        <if test="cabout != null and cabout != ''">
+          AND cabout = #{cabout}
+        </if>
+        <if test="picture != null and picture != ''">
+          AND picture = #{picture}
+        </if>
+        <if test="categoryid != null and categoryid != ''">
+          AND categoryid = #{categoryid}
+        </if>
+        <if test="status != null or status == false">
+          AND status = #{status}
+        </if>
+        <if test="courselength != null and courselength != ''">
+          AND courselength = #{courselength}
+        </if>
+        <if test="createuserid != null and createuserid != ''">
+          AND createuserid = #{createuserid}
+        </if>
+        <if test="teacherid != null and teacherid != ''">
+          AND teacherid = #{teacherid}
+        </if>
+        <if test="coursecreatetime != null and coursecreatetime != ''">
+          AND coursecreatetime = #{coursecreatetime}
+        </if>
+        <if test="rating != null and rating != ''">
+          AND rating = #{rating}
+        </if>
+        <if test="isfinish != null or isfinish == false">
+          AND isfinish= #{isfinish}
+        </if>
+        <if test="value1 != null and value1 != ''">
+          AND value1 = #{value1}
+        </if>
+        <if test="value2 != null and value2 != ''">
+          AND value2 = #{value2}
+        </if>
+    </where>
+  </select>
+  
+   <select id="queryByPage" resultMap="BaseResultMap" parameterType="com.learn.model.courseInfo">
+    SELECT
+    <include refid="Base_Column_List" />
+    from course_info
+    <where>
+    	<if test="courseid != null and courseid != ''">
+    	AND courseid = #{courseid}
+    	</if>
+    	<if test="coursetitle != null and coursetitle != ''">
+          AND coursetitle like concat('%',#{coursetitle},'%')
+        </if>
+        <if test="cabout != null and cabout != ''">
+          AND cabout = #{cabout}
+        </if>
+        <if test="picture != null and picture != ''">
+          AND picture = #{picture}
+        </if>
+        <if test="categoryid != null and categoryid != ''">
+          AND categoryid = #{categoryid}
+        </if>
+        <if test="status != null or status == false">
+          AND status = #{status}
+        </if>
+        <if test="courselength != null and courselength != ''">
+          AND courselength = #{courselength}
+        </if>
+        <if test="createuserid != null and createuserid != ''">
+          AND createuserid = #{createuserid}
+        </if>
+        <if test="teacherid != null and teacherid != ''">
+          AND teacherid = #{teacherid}
+        </if>
+        <if test="coursecreatetime != null and coursecreatetime != ''">
+          AND coursecreatetime = #{coursecreatetime}
+        </if>
+        <if test="rating != null and rating != ''">
+          AND rating = #{rating}
+        </if>
+        <if test="isfinish != null or isfinish == false">
+          AND isfinish= #{isfinish}
+        </if>
+        <if test="value1 != null and value1 != ''">
+          AND value1 = #{value1}
+        </if>
+        <if test="value2 != null and value2 != ''">
+          AND value2 = #{value2}
+        </if>
+    </where>
+  </select>
+  
+  <select id="selectByPrimaryKey2" parameterType="java.lang.Integer" resultMap="BaseResultMap2">
+    select 
+    <include refid="Base_Column_List" />
+    from course_info
+    where courseid = #{courseid,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from course_info
+    where courseid = #{courseid,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectByList" resultMap="BaseResultMap2">
+  	select
+  	<include refid="Base_Column_List"/>
+  	from course_info
+  	where courseid in
+  	<foreach collection="courseidList" index="index" item="item" open="(" separator="," close=")">
+     #{item}       
+    </foreach>
+    <if test="coursetitle !=null and coursetitle !=''">
+    	AND coursetitle like concat('%',#{coursetitle},'%') 
+    </if>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from course_info
+    where courseid = #{courseid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.learn.model.courseInfo">
+    insert into course_info (courseid, coursetitle, cabout, 
+      picture, studynum, categoryid, 
+      status, courselength, createuserid, 
+      teacherid, coursecreatetime, rating, 
+      isfinish, value1, value2
+      )
+    values (#{courseid,jdbcType=INTEGER}, #{coursetitle,jdbcType=VARCHAR}, #{cabout,jdbcType=VARCHAR}, 
+      #{picture,jdbcType=VARCHAR}, #{studynum,jdbcType=INTEGER}, #{categoryid,jdbcType=INTEGER}, 
+      #{status,jdbcType=BIT}, #{courselength,jdbcType=INTEGER}, #{createuserid,jdbcType=INTEGER}, 
+      #{teacherid,jdbcType=INTEGER}, #{coursecreatetime,jdbcType=TIMESTAMP}, #{rating,jdbcType=DOUBLE}, 
+      #{isfinish,jdbcType=BIT}, #{value1,jdbcType=VARCHAR}, #{value2,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.learn.model.courseInfo">
+    insert into course_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="courseid != null">
+        courseid,
+      </if>
+      <if test="coursetitle != null">
+        coursetitle,
+      </if>
+      <if test="cabout != null">
+        cabout,
+      </if>
+      <if test="picture != null">
+        picture,
+      </if>
+      <if test="studynum != null">
+        studynum,
+      </if>
+      <if test="categoryid != null">
+        categoryid,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="courselength != null">
+        courselength,
+      </if>
+      <if test="createuserid != null">
+        createuserid,
+      </if>
+      <if test="teacherid != null">
+        teacherid,
+      </if>
+      <if test="coursecreatetime != null">
+        coursecreatetime,
+      </if>
+      <if test="rating != null">
+        rating,
+      </if>
+      <if test="isfinish != null">
+        isfinish,
+      </if>
+      <if test="value1 != null">
+        value1,
+      </if>
+      <if test="value2 != null">
+        value2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="courseid != null">
+        #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="coursetitle != null">
+        #{coursetitle,jdbcType=VARCHAR},
+      </if>
+      <if test="cabout != null">
+        #{cabout,jdbcType=VARCHAR},
+      </if>
+      <if test="picture != null">
+        #{picture,jdbcType=VARCHAR},
+      </if>
+      <if test="studynum != null">
+        #{studynum,jdbcType=INTEGER},
+      </if>
+      <if test="categoryid != null">
+        #{categoryid,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="courselength != null">
+        #{courselength,jdbcType=INTEGER},
+      </if>
+      <if test="createuserid != null">
+        #{createuserid,jdbcType=INTEGER},
+      </if>
+      <if test="teacherid != null">
+        #{teacherid,jdbcType=INTEGER},
+      </if>
+      <if test="coursecreatetime != null">
+        #{coursecreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rating != null">
+        #{rating,jdbcType=DOUBLE},
+      </if>
+      <if test="isfinish != null">
+        #{isfinish,jdbcType=BIT},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        #{value2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.learn.model.courseInfo">
+    update course_info
+    <set>
+      <if test="coursetitle != null">
+        coursetitle = #{coursetitle,jdbcType=VARCHAR},
+      </if>
+      <if test="cabout != null">
+        cabout = #{cabout,jdbcType=VARCHAR},
+      </if>
+      <if test="picture != null">
+        picture = #{picture,jdbcType=VARCHAR},
+      </if>
+      <if test="studynum != null">
+        studynum = #{studynum,jdbcType=INTEGER},
+      </if>
+      <if test="categoryid != null">
+        categoryid = #{categoryid,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="courselength != null">
+        courselength = #{courselength,jdbcType=INTEGER},
+      </if>
+      <if test="createuserid != null">
+        createuserid = #{createuserid,jdbcType=INTEGER},
+      </if>
+      <if test="teacherid != null">
+        teacherid = #{teacherid,jdbcType=INTEGER},
+      </if>
+      <if test="coursecreatetime != null">
+        coursecreatetime = #{coursecreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rating != null">
+        rating = #{rating,jdbcType=DOUBLE},
+      </if>
+      <if test="isfinish != null">
+        isfinish = #{isfinish,jdbcType=BIT},
+      </if>
+      <if test="value1 != null">
+        value1 = #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        value2 = #{value2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where courseid = #{courseid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.learn.model.courseInfo">
+    update course_info
+    set coursetitle = #{coursetitle,jdbcType=VARCHAR},
+      cabout = #{cabout,jdbcType=VARCHAR},
+      picture = #{picture,jdbcType=VARCHAR},
+      studynum = #{studynum,jdbcType=INTEGER},
+      categoryid = #{categoryid,jdbcType=INTEGER},
+      status = #{status,jdbcType=BIT},
+      courselength = #{courselength,jdbcType=INTEGER},
+      createuserid = #{createuserid,jdbcType=INTEGER},
+      teacherid = #{teacherid,jdbcType=INTEGER},
+      coursecreatetime = #{coursecreatetime,jdbcType=TIMESTAMP},
+      rating = #{rating,jdbcType=DOUBLE},
+      isfinish = #{isfinish,jdbcType=BIT},
+      value1 = #{value1,jdbcType=VARCHAR},
+      value2 = #{value2,jdbcType=VARCHAR}
+    where courseid = #{courseid,jdbcType=INTEGER}
+  </update>
+</mapper>

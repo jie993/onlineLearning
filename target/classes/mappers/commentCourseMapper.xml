@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.dao.commentCourseMapper">
+  <resultMap id="BaseResultMap" type="com.learn.model.commentCourse">
+    <id column="commentid" jdbcType="INTEGER" property="commentid" />
+    <result column="comcontent" jdbcType="VARCHAR" property="comcontent" />
+    <result column="comisdisplay" jdbcType="BIT" property="comisdisplay" />
+    <result column="comcreatetime" jdbcType="TIMESTAMP" property="comcreatetime" />
+    <result column="comlikenum" jdbcType="INTEGER" property="comlikenum" />
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="courseid" jdbcType="INTEGER" property="courseid" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+    <result column="value2" jdbcType="VARCHAR" property="value2" />
+    <association property="user" column="userid"
+			javaType="com.learn.model.User" select="com.learn.dao.UserMapper.selectByPrimaryKey" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    commentid, comcontent, comisdisplay, comcreatetime, comlikenum, userid, courseid, 
+    value1, value2
+  </sql>
+  
+    <select id="selectCommentNum" parameterType="com.learn.model.commentCourse" resultType="java.util.Map">
+    SELECT 
+    COUNT(*) as commentNum 
+    FROM comment_course 
+    WHERE courseid = #{courseid} 
+    AND userid = #{userid}
+  </select>
+  
+   <select id="queryByPage" resultMap="BaseResultMap" parameterType="com.learn.model.commentCourse">
+    SELECT
+    <include refid="Base_Column_List" />
+    from comment_course
+    <where>
+    	<if test="commentid != null and commentid != ''">
+          AND commentid = #{commentid}
+        </if>
+        <if test="comcontent != null and comcontent != ''">
+          AND comcontent =#{comcontent}
+        </if>
+        <if test="comisdisplay != null and comisdisplay != ''">
+          AND comisdisplay = #{comisdisplay}
+        </if>
+        <if test="comcreatetime != null and comcreatetime != ''">
+          AND comcreatetime = #{comcreatetime}
+        </if>
+        <if test="comlikenum != null and comlikenum != ''">
+          AND comlikenum = #{comlikenum}
+        </if>
+        <if test="userid != null and userid != ''">
+          AND userid = #{userid}
+        </if>
+    	<if test="courseid !=null and courseid !='' ">
+    	and courseid = #{courseid} 
+    	</if>
+    	<if test="value1 != null and value1 != ''">
+          AND value1 = #{value1}
+        </if>
+        <if test="value2 != null and value2 != ''">
+          AND value2 = #{value2}
+        </if>
+    </where>     
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from comment_course
+    where commentid = #{commentid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from comment_course
+    where commentid = #{commentid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.learn.model.commentCourse">
+    insert into comment_course (commentid, comcontent, comisdisplay, 
+      comcreatetime, comlikenum, userid, 
+      courseid, value1, value2
+      )
+    values (#{commentid,jdbcType=INTEGER}, #{comcontent,jdbcType=VARCHAR}, #{comisdisplay,jdbcType=BIT}, 
+      #{comcreatetime,jdbcType=TIMESTAMP}, #{comlikenum,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, 
+      #{courseid,jdbcType=INTEGER}, #{value1,jdbcType=VARCHAR}, #{value2,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+  <insert id="insertSelectiveReturnid" parameterType="com.learn.model.commentCourse" useGeneratedKeys="true" keyProperty="commentid">
+    insert into comment_course
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="commentid != null">
+        commentid,
+      </if>
+      <if test="comcontent != null">
+        comcontent,
+      </if>
+      <if test="comisdisplay != null">
+        comisdisplay,
+      </if>
+      <if test="comcreatetime != null">
+        comcreatetime,
+      </if>
+      <if test="comlikenum != null">
+        comlikenum,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="courseid != null">
+        courseid,
+      </if>
+      <if test="value1 != null">
+        value1,
+      </if>
+      <if test="value2 != null">
+        value2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="commentid != null">
+        #{commentid,jdbcType=INTEGER},
+      </if>
+      <if test="comcontent != null">
+        #{comcontent,jdbcType=VARCHAR},
+      </if>
+      <if test="comisdisplay != null">
+        #{comisdisplay,jdbcType=BIT},
+      </if>
+      <if test="comcreatetime != null">
+        #{comcreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="comlikenum != null">
+        #{comlikenum,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="courseid != null">
+        #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        #{value2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.learn.model.commentCourse">
+    insert into comment_course
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="commentid != null">
+        commentid,
+      </if>
+      <if test="comcontent != null">
+        comcontent,
+      </if>
+      <if test="comisdisplay != null">
+        comisdisplay,
+      </if>
+      <if test="comcreatetime != null">
+        comcreatetime,
+      </if>
+      <if test="comlikenum != null">
+        comlikenum,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="courseid != null">
+        courseid,
+      </if>
+      <if test="value1 != null">
+        value1,
+      </if>
+      <if test="value2 != null">
+        value2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="commentid != null">
+        #{commentid,jdbcType=INTEGER},
+      </if>
+      <if test="comcontent != null">
+        #{comcontent,jdbcType=VARCHAR},
+      </if>
+      <if test="comisdisplay != null">
+        #{comisdisplay,jdbcType=BIT},
+      </if>
+      <if test="comcreatetime != null">
+        #{comcreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="comlikenum != null">
+        #{comlikenum,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="courseid != null">
+        #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        #{value2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.learn.model.commentCourse">
+    update comment_course
+    <set>
+      <if test="comcontent != null">
+        comcontent = #{comcontent,jdbcType=VARCHAR},
+      </if>
+      <if test="comisdisplay != null">
+        comisdisplay = #{comisdisplay,jdbcType=BIT},
+      </if>
+      <if test="comcreatetime != null">
+        comcreatetime = #{comcreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="comlikenum != null">
+        comlikenum = #{comlikenum,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="courseid != null">
+        courseid = #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        value1 = #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        value2 = #{value2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where commentid = #{commentid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.learn.model.commentCourse">
+    update comment_course
+    set comcontent = #{comcontent,jdbcType=VARCHAR},
+      comisdisplay = #{comisdisplay,jdbcType=BIT},
+      comcreatetime = #{comcreatetime,jdbcType=TIMESTAMP},
+      comlikenum = #{comlikenum,jdbcType=INTEGER},
+      userid = #{userid,jdbcType=INTEGER},
+      courseid = #{courseid,jdbcType=INTEGER},
+      value1 = #{value1,jdbcType=VARCHAR},
+      value2 = #{value2,jdbcType=VARCHAR}
+    where commentid = #{commentid,jdbcType=INTEGER}
+  </update>
+</mapper>

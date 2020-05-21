@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:aop="http://www.springframework.org/schema/aop"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+ xmlns:mvc="http://www.springframework.org/schema/mvc"
+ xmlns:websocket="http://www.springframework.org/schema/websocket"
+ xsi:schemaLocation="
+  http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+  http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+  http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+  http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+  http://www.springframework.org/schema/websocket
+  http://www.springframework.org/schema/websocket/spring-websocket.xsd">
+ <!-- 启动自动扫描 -->
+ <context:component-scan base-package="com.learn.controller" />
+ <context:component-scan base-package="com.learn.webSocket" />
+  <!--这里配置返回json时可能出现乱码。处理乱码-->
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="true">
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <property name="supportedMediaTypes" value="text/plain;charset=UTF-8"/>
+            </bean>
+            <bean  
+                class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">  
+                <property name="supportedMediaTypes">  
+                    <array>  
+                        <value>text/html;charset=UTF-8</value>  
+                    </array>  
+                </property>  
+                <property name="features">  
+                    <array>  
+                        <value>WriteMapNullValue</value>  
+                        <value>WriteNullStringAsEmpty</value>  
+                        <!-- 全局关闭循环引用检查，最好是不要关闭，不然有可能会StackOverflowException -->
+                    </array>  
+                </property>  
+            </bean>  
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+ <!-- 配置拦截器 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<!-- 拦截所有请求 -->
+			<mvc:mapping path="/**"/>
+			<mvc:exclude-mapping path="/login/**" />
+			<mvc:exclude-mapping path="/audit/uploadAuditFile/**" />
+			<mvc:exclude-mapping path="/teacher/uploadCourseVideo/**" />
+			<mvc:exclude-mapping path="/upload/image/**" />
+			<mvc:exclude-mapping path="/uploadFile/**" />
+			<mvc:exclude-mapping path="/ws/**" />
+			<mvc:exclude-mapping path="/user/registerUserInfo" />
+			<bean class="com.learn.utils.TokenInterceptor"></bean>			
+		</mvc:interceptor>
+	</mvc:interceptors>
+  <!-- 开启AOP注解扫描 -->
+ <aop:aspectj-autoproxy proxy-target-class="true" />
+ <!-- 静态资源可访问的设置方式 -->
+ <mvc:default-servlet-handler />
+ 
+ <mvc:resources location="classpath:/META-INF/resources/" mapping="swagger-ui.html"/>
+ <mvc:resources location="classpath:/META-INF/resources/webjars/" mapping="/webjars/**"/>
+      <!-- 加载SwaggerConfig-->
+ <!-- <bean class="com.learn.utils.SwaggerConfiguration"/> -->
+ <!-- 配置文件上传视图解析器 -->
+ <bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding" value="UTF-8" />
+		<property name="maxUploadSize" value="1000000000" />
+		<property name="uploadTempDir" value="upload" />
+		<property name="maxInMemorySize" value="1000000000" />
+</bean>
+ <!-- 配置视图解析器，可以显式设置，也可以不设置，不设置会依据SpringMVC的默认设置 -->
+ <bean id="viewResolver"
+  class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+  <property name="prefix" value="/" />
+  <property name="suffix" value="/" />
+ </bean>
+</beans>

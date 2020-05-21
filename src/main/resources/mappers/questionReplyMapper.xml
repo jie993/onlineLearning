@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.dao.questionReplyMapper">
+  <resultMap id="BaseResultMap" type="com.learn.model.questionReply">
+    <id column="questionid" jdbcType="INTEGER" property="questionid" />
+    <result column="questiontitle" jdbcType="VARCHAR" property="questiontitle" />
+    <result column="qcontent" jdbcType="VARCHAR" property="qcontent" />
+    <result column="qcreatetime" jdbcType="TIMESTAMP" property="qcreatetime" />
+    <result column="courseid" jdbcType="INTEGER" property="courseid" />
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="qisfinish" jdbcType="BIT" property="qisfinish" />
+    <result column="teacherid" jdbcType="INTEGER" property="teacherid" />
+    <result column="replycontent" jdbcType="VARCHAR" property="replycontent" />
+    <result column="qbnum" jdbcType="INTEGER" property="qbnum" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+    <result column="value2" jdbcType="VARCHAR" property="value2" />
+    <association property="user" column="userid"
+			javaType="com.learn.model.User" select="com.learn.dao.UserMapper.selectByPrimaryKey" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    questionid, questiontitle, qcontent, qcreatetime, courseid, userid, qisfinish, teacherid, 
+    replycontent, qbnum, value1, value2
+  </sql>
+  
+    <select id="selectQestionNum" parameterType="com.learn.model.questionReply" resultType="java.util.Map">
+    SELECT 
+    count(*) as qestionNum 
+    FROM question_reply 
+    WHERE courseid = #{courseid} AND userid = #{userid}
+  </select>
+  
+  <select id="queryByPage" resultMap="BaseResultMap" parameterType="com.learn.model.questionReply">
+    SELECT
+    <include refid="Base_Column_List" />
+    from question_reply
+    <where>
+    	<if test="questionid != null and questionid != ''">
+    		and questionid = #{questionid}
+    	</if>
+    	<if test="questiontitle != null and questiontitle != ''">
+          AND questiontitle like concat('%',#{questiontitle},'%')
+        </if>
+        <if test="qcontent != null and qcontent != ''">
+          AND qcontent = #{qcontent}
+        </if>
+        <if test="qcreatetime != null and qcreatetime != ''">
+          AND qcreatetime = #{qcreatetime}
+        </if>
+        <if test="courseid != null and courseid != ''">
+          AND courseid = #{courseid}
+        </if>
+        <if test="qisfinish != null and qisfinish != ''">
+          AND qisfinish = #{qisfinish}
+        </if>
+        <if test="teacherid != null and teacherid != ''">
+          AND teacherid = #{teacherid}
+        </if>
+        <if test="replycontent != null and replycontent != ''">
+          AND replycontent = #{replycontent}
+        </if>
+        <if test="qbnum != null and qbnum != ''">
+          AND qbnum = #{qbnum}
+        </if>
+        <if test="value1 != null and value1 != ''">
+          AND value1 = #{value1}
+        </if>
+        <if test="value2 != null and value2 != ''">
+          AND value2 = #{value2}
+        </if>
+    </where>
+  </select>
+  
+  <select id="selectByList" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List"/>
+  	from question_reply
+  	where courseid in
+  	<foreach collection="courseidList" index="index" item="item" open="(" separator="," close=")">
+  	#{item}
+  	</foreach>
+  	<if test="courseid != null and courseid !=''">
+  	AND courseid = #{courseid}
+  	</if>
+  	<if test="questiontitle != null and questiontitle != ''">
+  	AND questiontitle like concat('%',#{questiontitle},'%') 
+  	</if>
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from question_reply
+    where questionid = #{questionid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from question_reply
+    where questionid = #{questionid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.learn.model.questionReply">
+    insert into question_reply (questionid, questiontitle, qcontent, 
+      qcreatetime, courseid, userid, 
+      qisfinish, teacherid, replycontent, 
+      qbnum, value1, value2
+      )
+    values (#{questionid,jdbcType=INTEGER}, #{questiontitle,jdbcType=VARCHAR}, #{qcontent,jdbcType=VARCHAR}, 
+      #{qcreatetime,jdbcType=TIMESTAMP}, #{courseid,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, 
+      #{qisfinish,jdbcType=BIT}, #{teacherid,jdbcType=INTEGER}, #{replycontent,jdbcType=VARCHAR}, 
+      #{qbnum,jdbcType=INTEGER}, #{value1,jdbcType=VARCHAR}, #{value2,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.learn.model.questionReply" useGeneratedKeys="true" keyProperty="questionid">
+    insert into question_reply
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="questionid != null">
+        questionid,
+      </if>
+      <if test="questiontitle != null">
+        questiontitle,
+      </if>
+      <if test="qcontent != null">
+        qcontent,
+      </if>
+      <if test="qcreatetime != null">
+        qcreatetime,
+      </if>
+      <if test="courseid != null">
+        courseid,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="qisfinish != null">
+        qisfinish,
+      </if>
+      <if test="teacherid != null">
+        teacherid,
+      </if>
+      <if test="replycontent != null">
+        replycontent,
+      </if>
+      <if test="qbnum != null">
+        qbnum,
+      </if>
+      <if test="value1 != null">
+        value1,
+      </if>
+      <if test="value2 != null">
+        value2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="questionid != null">
+        #{questionid,jdbcType=INTEGER},
+      </if>
+      <if test="questiontitle != null">
+        #{questiontitle,jdbcType=VARCHAR},
+      </if>
+      <if test="qcontent != null">
+        #{qcontent,jdbcType=VARCHAR},
+      </if>
+      <if test="qcreatetime != null">
+        #{qcreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="courseid != null">
+        #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="qisfinish != null">
+        #{qisfinish,jdbcType=BIT},
+      </if>
+      <if test="teacherid != null">
+        #{teacherid,jdbcType=INTEGER},
+      </if>
+      <if test="replycontent != null">
+        #{replycontent,jdbcType=VARCHAR},
+      </if>
+      <if test="qbnum != null">
+        #{qbnum,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        #{value2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.learn.model.questionReply">
+    update question_reply
+    <set>
+      <if test="questiontitle != null">
+        questiontitle = #{questiontitle,jdbcType=VARCHAR},
+      </if>
+      <if test="qcontent != null">
+        qcontent = #{qcontent,jdbcType=VARCHAR},
+      </if>
+      <if test="qcreatetime != null">
+        qcreatetime = #{qcreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="courseid != null">
+        courseid = #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="qisfinish != null">
+        qisfinish = #{qisfinish,jdbcType=BIT},
+      </if>
+      <if test="teacherid != null">
+        teacherid = #{teacherid,jdbcType=INTEGER},
+      </if>
+      <if test="replycontent != null">
+        replycontent = #{replycontent,jdbcType=VARCHAR},
+      </if>
+      <if test="qbnum != null">
+        qbnum = #{qbnum,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        value1 = #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        value2 = #{value2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where questionid = #{questionid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.learn.model.questionReply">
+    update question_reply
+    set questiontitle = #{questiontitle,jdbcType=VARCHAR},
+      qcontent = #{qcontent,jdbcType=VARCHAR},
+      qcreatetime = #{qcreatetime,jdbcType=TIMESTAMP},
+      courseid = #{courseid,jdbcType=INTEGER},
+      userid = #{userid,jdbcType=INTEGER},
+      qisfinish = #{qisfinish,jdbcType=BIT},
+      teacherid = #{teacherid,jdbcType=INTEGER},
+      replycontent = #{replycontent,jdbcType=VARCHAR},
+      qbnum = #{qbnum,jdbcType=INTEGER},
+      value1 = #{value1,jdbcType=VARCHAR},
+      value2 = #{value2,jdbcType=VARCHAR}
+    where questionid = #{questionid,jdbcType=INTEGER}
+  </update>
+</mapper>

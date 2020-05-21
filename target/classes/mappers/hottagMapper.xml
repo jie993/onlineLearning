@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.dao.hottagMapper">
+  <resultMap id="BaseResultMap" type="com.learn.model.hottag">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="tagname" jdbcType="VARCHAR" property="tagname" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="color" jdbcType="INTEGER" property="color" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, tagname, createtime, color, status, value1
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from hottag
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectAllTag" resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List"/>
+  from hottag
+  </select>
+  
+  <select id="selectByDate" resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List"/>
+  from hottag
+  <where>
+  <if test="startDate != null and startDate != ''">
+  and createtime <![CDATA[>=]]> #{startDate}
+  </if>
+  <if test="endDate != null and endDate != ''">
+  and createtime <![CDATA[<=]]> #{endDate}
+  </if>
+  </where>
+  </select>
+  
+  <select id="selectHotTag" parameterType="java.lang.Integer" resultType="java.util.Map">
+  SELECT 
+  kpintoid,kpoint_name,num
+  FROM 
+  (SELECT 
+  sum(kpoint_weight*`value`) AS num ,kpintoid,courseid,kpoint_name
+  FROM course_knowledgepoint GROUP BY kpintoid order by num desc) 
+  temp 
+  LIMIT #{tagnum}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from hottag
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.learn.model.hottag">
+    insert into hottag (id, tagname, createtime, 
+      color, status, value1
+      )
+    values (#{id,jdbcType=INTEGER}, #{tagname,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{color,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{value1,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.learn.model.hottag" useGeneratedKeys="true" keyProperty="id">
+    insert into hottag
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="tagname != null">
+        tagname,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+      <if test="color != null">
+        color,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="value1 != null">
+        value1,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="tagname != null">
+        #{tagname,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="color != null">
+        #{color,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.learn.model.hottag">
+    update hottag
+    <set>
+      <if test="tagname != null">
+        tagname = #{tagname,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="color != null">
+        color = #{color,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="value1 != null">
+        value1 = #{value1,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.learn.model.hottag">
+    update hottag
+    set tagname = #{tagname,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      color = #{color,jdbcType=INTEGER},
+      status = #{status,jdbcType=VARCHAR},
+      value1 = #{value1,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

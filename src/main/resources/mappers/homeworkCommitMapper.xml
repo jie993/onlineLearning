@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.dao.homeworkCommitMapper">
+  <resultMap id="BaseResultMap" type="com.learn.model.homeworkCommit">
+    <id column="wid" jdbcType="INTEGER" property="wid" />
+    <id column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="hwcommitfileuri" jdbcType="VARCHAR" property="hwcommitfileuri" />
+    <result column="hwcommitdate" jdbcType="TIMESTAMP" property="hwcommitdate" />
+    <result column="hwcscore" jdbcType="INTEGER" property="hwcscore" />
+    <result column="ischeck" jdbcType="BIT" property="ischeck" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+    <result column="value2" jdbcType="VARCHAR" property="value2" />
+  </resultMap>
+  <resultMap id="BaseResultMap2" type="com.learn.model.homeworkCommit">
+    <id column="wid" jdbcType="INTEGER" property="wid" />
+    <id column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="hwcommitfileuri" jdbcType="VARCHAR" property="hwcommitfileuri" />
+    <result column="hwcommitdate" jdbcType="TIMESTAMP" property="hwcommitdate" />
+    <result column="hwcscore" jdbcType="INTEGER" property="hwcscore" />
+    <result column="ischeck" jdbcType="BIT" property="ischeck" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+    <result column="value2" jdbcType="VARCHAR" property="value2" />
+    <association property="user" column="userid"
+			javaType="com.learn.model.User" select="com.learn.dao.UserMapper.selectByPrimaryKey" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    wid, userid, hwcommitfileuri, hwcommitdate, hwcscore, ischeck, remark, value1, value2
+  </sql>
+  
+    <select id="selectAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from homework_commit
+  </select>
+  
+   <select id="queryByPage" resultMap="BaseResultMap2" parameterType="com.learn.model.homeworkCommit">
+    SELECT
+    <include refid="Base_Column_List" />
+    from homework_commit
+    <where>
+    <if test="wid != null and wid != ''">
+    AND wid =#{wid}
+    </if>
+    <if test="userid != null and userid != ''">
+     AND userid = #{userid}
+    </if>
+    </where>
+  </select>
+  
+  <select id="selectHomeworkScore" resultType="java.util.Map">
+  SELECT 
+  SUM(hwcscore) as courseScore 
+  FROM homework_commit 
+  WHERE userid = #{userid} AND wid in (SELECT wid FROM homework_info WHERE courseid = #{courseid})
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="com.learn.model.homeworkCommitKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from homework_commit
+    where wid = #{wid,jdbcType=INTEGER}
+      and userid = #{userid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.learn.model.homeworkCommitKey">
+    delete from homework_commit
+    where wid = #{wid,jdbcType=INTEGER}
+      and userid = #{userid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.learn.model.homeworkCommit">
+    insert into homework_commit (wid, userid, hwcommitfileuri, 
+      hwcommitdate, hwcscore, ischeck, 
+      remark, value1, value2
+      )
+    values (#{wid,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{hwcommitfileuri,jdbcType=VARCHAR}, 
+      #{hwcommitdate,jdbcType=TIMESTAMP}, #{hwcscore,jdbcType=INTEGER}, #{ischeck,jdbcType=BIT}, 
+      #{remark,jdbcType=VARCHAR}, #{value1,jdbcType=VARCHAR}, #{value2,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.learn.model.homeworkCommit">
+    insert into homework_commit
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="wid != null">
+        wid,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="hwcommitfileuri != null">
+        hwcommitfileuri,
+      </if>
+      <if test="hwcommitdate != null">
+        hwcommitdate,
+      </if>
+      <if test="hwcscore != null">
+        hwcscore,
+      </if>
+      <if test="ischeck != null">
+        ischeck,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="value1 != null">
+        value1,
+      </if>
+      <if test="value2 != null">
+        value2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="wid != null">
+        #{wid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="hwcommitfileuri != null">
+        #{hwcommitfileuri,jdbcType=VARCHAR},
+      </if>
+      <if test="hwcommitdate != null">
+        #{hwcommitdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="hwcscore != null">
+        #{hwcscore,jdbcType=INTEGER},
+      </if>
+      <if test="ischeck != null">
+        #{ischeck,jdbcType=BIT},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        #{value2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.learn.model.homeworkCommit">
+    update homework_commit
+    <set>
+      <if test="hwcommitfileuri != null">
+        hwcommitfileuri = #{hwcommitfileuri,jdbcType=VARCHAR},
+      </if>
+      <if test="hwcommitdate != null">
+        hwcommitdate = #{hwcommitdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="hwcscore != null">
+        hwcscore = #{hwcscore,jdbcType=INTEGER},
+      </if>
+      <if test="ischeck != null">
+        ischeck = #{ischeck,jdbcType=BIT},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="value1 != null">
+        value1 = #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        value2 = #{value2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where wid = #{wid,jdbcType=INTEGER}
+      and userid = #{userid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.learn.model.homeworkCommit">
+    update homework_commit
+    set hwcommitfileuri = #{hwcommitfileuri,jdbcType=VARCHAR},
+      hwcommitdate = #{hwcommitdate,jdbcType=TIMESTAMP},
+      hwcscore = #{hwcscore,jdbcType=INTEGER},
+      ischeck = #{ischeck,jdbcType=BIT},
+      remark = #{remark,jdbcType=VARCHAR},
+      value1 = #{value1,jdbcType=VARCHAR},
+      value2 = #{value2,jdbcType=VARCHAR}
+    where wid = #{wid,jdbcType=INTEGER}
+      and userid = #{userid,jdbcType=INTEGER}
+  </update>
+</mapper>

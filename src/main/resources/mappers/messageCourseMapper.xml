@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.dao.messageCourseMapper">
+  <resultMap id="BaseResultMap" type="com.learn.model.messageCourse">
+    <id column="messageid" jdbcType="INTEGER" property="messageid" />
+    <result column="messagetitle" jdbcType="VARCHAR" property="messagetitle" />
+    <result column="messagecontent" jdbcType="VARCHAR" property="messagecontent" />
+    <result column="mbrowsenum" jdbcType="INTEGER" property="mbrowsenum" />
+    <result column="mcreatetime" jdbcType="TIMESTAMP" property="mcreatetime" />
+    <result column="courseid" jdbcType="INTEGER" property="courseid" />
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+    <result column="value2" jdbcType="VARCHAR" property="value2" />
+    <association property="course" column="courseid"
+			javaType="com.learn.model.courseInfo" select="com.learn.dao.courseInfoMapper.selectByPrimaryKey2" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    messageid, messagetitle, messagecontent, mbrowsenum, mcreatetime, courseid, userid, 
+    value1, value2
+  </sql>
+  
+    <select id="selectAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from message_course
+  </select>
+  
+   <select id="queryByPage" resultMap="BaseResultMap" parameterType="com.learn.model.messageCourse">
+    SELECT
+    <include refid="Base_Column_List" />
+    from message_course
+    <where>
+    	<if test="messageid != null and messageid != ''">
+          AND messageid = #{messageid}
+        </if>
+        <if test="messagetitle != null and messagetitle != ''">
+          AND messagetitle like concat('%',#{messagetitle},'%')
+        </if>
+        <if test="messagecontent != null and messagecontent != ''">
+          AND messagecontent = #{messagecontent}
+        </if>
+        <if test="mbrowsenum != null and mbrowsenum != ''">
+          AND mbrowsenum = #{mbrowsenum}
+        </if>
+        <if test="mcreatetime != null and mcreatetime != ''">
+          AND mcreatetime = #{mcreatetime}
+        </if>
+    	<if test="courseid != null and courseid != ''">
+          AND courseid = #{courseid}
+        </if>
+        <if test="userid != null and userid != ''">
+          AND userid = #{userid}
+        </if>
+        <if test="value1 != null and value1 != ''">
+          AND value1 = #{value1}
+        </if>
+        <if test="value2 != null and value2 != ''">
+          AND value2 = #{value2}
+        </if>
+    </where>
+  </select>
+  
+  <select id="selectByList" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List"/>
+  	from message_course
+  	where courseid in
+  	<foreach collection="courseidList" index="index" item="item" open="(" separator="," close=")">
+  		#{item}
+  	</foreach>
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from message_course
+    where messageid = #{messageid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from message_course
+    where messageid = #{messageid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.learn.model.messageCourse">
+    insert into message_course (messageid, messagetitle, messagecontent, 
+      mbrowsenum, mcreatetime, courseid, 
+      userid, value1, value2
+      )
+    values (#{messageid,jdbcType=INTEGER}, #{messagetitle,jdbcType=VARCHAR}, #{messagecontent,jdbcType=VARCHAR}, 
+      #{mbrowsenum,jdbcType=INTEGER}, #{mcreatetime,jdbcType=TIMESTAMP}, #{courseid,jdbcType=INTEGER}, 
+      #{userid,jdbcType=INTEGER}, #{value1,jdbcType=VARCHAR}, #{value2,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.learn.model.messageCourse" useGeneratedKeys="true" keyProperty="messageid">
+    insert into message_course
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="messageid != null">
+        messageid,
+      </if>
+      <if test="messagetitle != null">
+        messagetitle,
+      </if>
+      <if test="messagecontent != null">
+        messagecontent,
+      </if>
+      <if test="mbrowsenum != null">
+        mbrowsenum,
+      </if>
+      <if test="mcreatetime != null">
+        mcreatetime,
+      </if>
+      <if test="courseid != null">
+        courseid,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="value1 != null">
+        value1,
+      </if>
+      <if test="value2 != null">
+        value2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="messageid != null">
+        #{messageid,jdbcType=INTEGER},
+      </if>
+      <if test="messagetitle != null">
+        #{messagetitle,jdbcType=VARCHAR},
+      </if>
+      <if test="messagecontent != null">
+        #{messagecontent,jdbcType=VARCHAR},
+      </if>
+      <if test="mbrowsenum != null">
+        #{mbrowsenum,jdbcType=INTEGER},
+      </if>
+      <if test="mcreatetime != null">
+        #{mcreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="courseid != null">
+        #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        #{value2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.learn.model.messageCourse">
+    update message_course
+    <set>
+      <if test="messagetitle != null">
+        messagetitle = #{messagetitle,jdbcType=VARCHAR},
+      </if>
+      <if test="messagecontent != null">
+        messagecontent = #{messagecontent,jdbcType=VARCHAR},
+      </if>
+      <if test="mbrowsenum != null">
+        mbrowsenum = #{mbrowsenum,jdbcType=INTEGER},
+      </if>
+      <if test="mcreatetime != null">
+        mcreatetime = #{mcreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="courseid != null">
+        courseid = #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        value1 = #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        value2 = #{value2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where messageid = #{messageid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.learn.model.messageCourse">
+    update message_course
+    set messagetitle = #{messagetitle,jdbcType=VARCHAR},
+      messagecontent = #{messagecontent,jdbcType=VARCHAR},
+      mbrowsenum = #{mbrowsenum,jdbcType=INTEGER},
+      mcreatetime = #{mcreatetime,jdbcType=TIMESTAMP},
+      courseid = #{courseid,jdbcType=INTEGER},
+      userid = #{userid,jdbcType=INTEGER},
+      value1 = #{value1,jdbcType=VARCHAR},
+      value2 = #{value2,jdbcType=VARCHAR}
+    where messageid = #{messageid,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.dao.logDownloadfileMapper">
+  <resultMap id="BaseResultMap" type="com.learn.model.logDownloadfile">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="fileid" jdbcType="INTEGER" property="fileid" />
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="downloadtime" jdbcType="TIMESTAMP" property="downloadtime" />
+    <result column="value" jdbcType="VARCHAR" property="value" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, fileid, userid, downloadtime, value
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from log_downloadfile
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectAll" parameterType="com.learn.model.logDownloadfile" resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List" />
+  from log_downloadfile
+  <where>
+  <if test="id != null and id != ''">
+  	and id = #{id}
+  </if>
+  <if test="fileid != null and fileid != ''">
+  	and fileid = #{fileid}
+  </if>
+  <if test="userid != null and userid != ''">
+  	and userid = #{userid}
+  </if>
+  <if test="downloadtime != null and downloadtime != ''">
+  	and downloadtime = #{downloadtime}
+  </if>
+  <if test="value != null and value != ''">
+  	and value = #{value}
+  </if>
+  </where>
+  </select>
+  
+  <select id="selectDownloadNum" resultType="java.util.Map">
+  SELECT 
+  COUNT(*) as downloadNum 
+  from log_downloadfile 
+  WHERE userid = #{userid} and fileid IN (SELECT fileid FROM file_info WHERE courseid = #{courseid})
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from log_downloadfile
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.learn.model.logDownloadfile">
+    insert into log_downloadfile (id, fileid, userid, 
+      downloadtime, value)
+    values (#{id,jdbcType=INTEGER}, #{fileid,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, 
+      #{downloadtime,jdbcType=TIMESTAMP}, #{value,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.learn.model.logDownloadfile">
+    insert into log_downloadfile
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="fileid != null">
+        fileid,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="downloadtime != null">
+        downloadtime,
+      </if>
+      <if test="value != null">
+        value,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="fileid != null">
+        #{fileid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="downloadtime != null">
+        #{downloadtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="value != null">
+        #{value,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.learn.model.logDownloadfile">
+    update log_downloadfile
+    <set>
+      <if test="fileid != null">
+        fileid = #{fileid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="downloadtime != null">
+        downloadtime = #{downloadtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="value != null">
+        value = #{value,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.learn.model.logDownloadfile">
+    update log_downloadfile
+    set fileid = #{fileid,jdbcType=INTEGER},
+      userid = #{userid,jdbcType=INTEGER},
+      downloadtime = #{downloadtime,jdbcType=TIMESTAMP},
+      value = #{value,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

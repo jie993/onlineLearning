@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.dao.sectionCourseInfoMapper">
+  <resultMap id="BaseResultMap" type="com.learn.model.sectionCourseInfo">
+    <id column="sectionid" jdbcType="INTEGER" property="sectionid" />
+    <result column="sectiontitle" jdbcType="VARCHAR" property="sectiontitle" />
+    <result column="screatetime" jdbcType="TIMESTAMP" property="screatetime" />
+    <result column="courseid" jdbcType="INTEGER" property="courseid" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+    <result column="value2" jdbcType="VARCHAR" property="value2" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    sectionid, sectiontitle, screatetime, courseid, value1, value2
+  </sql>
+  
+    <select id="selectAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from section_course_info
+  </select>
+  
+  <select id="queryByPage" resultMap="BaseResultMap" parameterType="com.learn.model.sectionCourseInfo">
+    SELECT
+    <include refid="Base_Column_List" />
+    from section_course_info
+    <where>
+    	<if test="sectionid != null and sectionid != ''">
+          AND sectionid = #{sectionid}
+        </if>
+        <if test="sectiontitle != null and sectiontitle != ''">
+          AND sectiontitle = #{sectiontitle}
+        </if>
+        <if test="screatetime != null and screatetime != ''">
+          AND screatetime = #{screatetime}
+        </if>
+    	<if test="courseid != null and courseid != ''">
+          AND courseid = #{courseid}
+        </if>
+        <if test="value1 != null and value1 != ''">
+          AND value1 = #{value1}
+        </if>
+        <if test="value2 != null and value2 != ''">
+          AND value2 = #{value2}
+        </if>
+    </where>
+      
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from section_course_info
+    where sectionid = #{sectionid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from section_course_info
+    where sectionid = #{sectionid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.learn.model.sectionCourseInfo">
+    insert into section_course_info (sectionid, sectiontitle, screatetime, 
+      courseid, value1, value2
+      )
+    values (#{sectionid,jdbcType=INTEGER}, #{sectiontitle,jdbcType=VARCHAR}, #{screatetime,jdbcType=TIMESTAMP}, 
+      #{courseid,jdbcType=INTEGER}, #{value1,jdbcType=VARCHAR}, #{value2,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+  <insert id="insertSelectiveReturnId" parameterType="com.learn.model.sectionCourseInfo" useGeneratedKeys="true" keyProperty="sectionid">
+    insert into section_course_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="sectionid != null">
+        sectionid,
+      </if>
+      <if test="sectiontitle != null">
+        sectiontitle,
+      </if>
+      <if test="screatetime != null">
+        screatetime,
+      </if>
+      <if test="courseid != null">
+        courseid,
+      </if>
+      <if test="value1 != null">
+        value1,
+      </if>
+      <if test="value2 != null">
+        value2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="sectionid != null">
+        #{sectionid,jdbcType=INTEGER},
+      </if>
+      <if test="sectiontitle != null">
+        #{sectiontitle,jdbcType=VARCHAR},
+      </if>
+      <if test="screatetime != null">
+        #{screatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="courseid != null">
+        #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        #{value2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.learn.model.sectionCourseInfo">
+    insert into section_course_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="sectionid != null">
+        sectionid,
+      </if>
+      <if test="sectiontitle != null">
+        sectiontitle,
+      </if>
+      <if test="screatetime != null">
+        screatetime,
+      </if>
+      <if test="courseid != null">
+        courseid,
+      </if>
+      <if test="value1 != null">
+        value1,
+      </if>
+      <if test="value2 != null">
+        value2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="sectionid != null">
+        #{sectionid,jdbcType=INTEGER},
+      </if>
+      <if test="sectiontitle != null">
+        #{sectiontitle,jdbcType=VARCHAR},
+      </if>
+      <if test="screatetime != null">
+        #{screatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="courseid != null">
+        #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        #{value2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.learn.model.sectionCourseInfo">
+    update section_course_info
+    <set>
+      <if test="sectiontitle != null">
+        sectiontitle = #{sectiontitle,jdbcType=VARCHAR},
+      </if>
+      <if test="screatetime != null">
+        screatetime = #{screatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="courseid != null">
+        courseid = #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        value1 = #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        value2 = #{value2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where sectionid = #{sectionid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.learn.model.sectionCourseInfo">
+    update section_course_info
+    set sectiontitle = #{sectiontitle,jdbcType=VARCHAR},
+      screatetime = #{screatetime,jdbcType=TIMESTAMP},
+      courseid = #{courseid,jdbcType=INTEGER},
+      value1 = #{value1,jdbcType=VARCHAR},
+      value2 = #{value2,jdbcType=VARCHAR}
+    where sectionid = #{sectionid,jdbcType=INTEGER}
+  </update>
+</mapper>

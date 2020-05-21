@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.dao.liveCourseInfoMapper">
+  <resultMap id="BaseResultMap" type="com.learn.model.liveCourseInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="liveclassname" jdbcType="VARCHAR" property="liveclassname" />
+    <result column="starttime" jdbcType="TIMESTAMP" property="starttime" />
+    <result column="finshtime" jdbcType="TIMESTAMP" property="finshtime" />
+    <result column="liveurl" jdbcType="VARCHAR" property="liveurl" />
+    <result column="courseid" jdbcType="INTEGER" property="courseid" />
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+    <result column="value2" jdbcType="VARCHAR" property="value2" />
+  </resultMap>
+  
+  <resultMap id="BaseResultMap2" type="com.learn.model.liveCourseInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="liveclassname" jdbcType="VARCHAR" property="liveclassname" />
+    <result column="starttime" jdbcType="TIMESTAMP" property="starttime" />
+    <result column="finshtime" jdbcType="TIMESTAMP" property="finshtime" />
+    <result column="liveurl" jdbcType="VARCHAR" property="liveurl" />
+    <result column="courseid" jdbcType="INTEGER" property="courseid" />
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+    <result column="value2" jdbcType="VARCHAR" property="value2" />
+    <association property="user" column="userid"
+			javaType="com.learn.model.User" select="com.learn.dao.UserMapper.selectByPrimaryKey" />
+  </resultMap>
+  <resultMap id="BaseResultMap3" type="com.learn.model.liveCourseInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="liveclassname" jdbcType="VARCHAR" property="liveclassname" />
+    <result column="starttime" jdbcType="TIMESTAMP" property="starttime" />
+    <result column="finshtime" jdbcType="TIMESTAMP" property="finshtime" />
+    <result column="liveurl" jdbcType="VARCHAR" property="liveurl" />
+    <result column="courseid" jdbcType="INTEGER" property="courseid" />
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+    <result column="value2" jdbcType="VARCHAR" property="value2" />
+    <association property="user" column="userid"
+			javaType="com.learn.model.User" select="com.learn.dao.UserMapper.selectByPrimaryKey" />
+	<association property="course" column="courseid"
+			javaType="com.learn.model.courseInfo" select="com.learn.dao.courseInfoMapper.selectByPrimaryKey" />		
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, liveclassname, starttime, finshtime, liveurl, courseid, userid, value1, value2
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap3">
+    select 
+    <include refid="Base_Column_List" />
+    from livecourse_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="queryByPage" resultMap="BaseResultMap2" parameterType="com.learn.model.liveCourseInfo">
+  select
+  <include refid="Base_Column_List"/>
+  from livecourse_info
+  <where>
+  	<if test="id != null and id !=''">
+  	and id =#{id}
+  	</if>
+  	<if test="liveclassname != null and liveclassname !=''">
+  	and liveclassname =#{liveclassname}
+  	</if>
+  	<if test="starttime != null and finshtime != null">
+  	and starttime <![CDATA[>=]]>#{starttime}
+  	and finshtime <![CDATA[<=]]>#{finshtime}
+  	</if>
+  	<if test="liveurl != null and liveurl !=''">
+  	and liveurl =#{liveurl}
+  	</if>
+  	<if test="courseid != null and courseid !=''">
+  	and courseid =#{courseid}
+  	</if>
+  	<if test="userid != null and userid !=''">
+  	and userid =#{userid}
+  	</if>
+  	<if test="value1 != null and value1 !=''">
+  	and value1 =#{value1}
+  	</if>
+  	<if test="value2 != null and value2 !=''">
+  	and value2 =#{value2}
+  	</if>
+  </where>
+  </select>
+  
+  <select id="queryByPage2" resultMap="BaseResultMap" parameterType="com.learn.model.liveCourseInfo">
+  select
+  <include refid="Base_Column_List"/>
+  from livecourse_info
+  <where>
+  	<if test="id != null and id !=''">
+  	and id =#{id}
+  	</if>
+  	<if test="liveclassname != null and liveclassname !=''">
+  	and liveclassname =#{liveclassname}
+  	</if>
+  	<if test="starttime != null and finshtime != null">
+  	and starttime <![CDATA[>=]]>#{starttime}
+  	and finshtime <![CDATA[<=]]>#{finshtime}
+  	</if>
+  	<if test="liveurl != null and liveurl !=''">
+  	and liveurl =#{liveurl}
+  	</if>
+  	<if test="courseid != null and courseid !=''">
+  	and courseid =#{courseid}
+  	</if>
+  	<if test="userid != null and userid !=''">
+  	and courseid in (SELECT courseid FROM user_course_learn WHERE userid = #{userid})
+  	</if>
+  	<if test="value1 != null and value1 !=''">
+  	and value1 =#{value1}
+  	</if>
+  	<if test="value2 != null and value2 !=''">
+  	and value2 =#{value2}
+  	</if>
+  </where>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from livecourse_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.learn.model.liveCourseInfo">
+    insert into livecourse_info (id, liveclassname, starttime, 
+      finshtime, liveurl, courseid, 
+      userid, value1, value2
+      )
+    values (#{id,jdbcType=INTEGER}, #{liveclassname,jdbcType=VARCHAR}, #{starttime,jdbcType=TIMESTAMP}, 
+      #{finshtime,jdbcType=TIMESTAMP}, #{liveurl,jdbcType=VARCHAR}, #{courseid,jdbcType=INTEGER}, 
+      #{userid,jdbcType=INTEGER}, #{value1,jdbcType=VARCHAR}, #{value2,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.learn.model.liveCourseInfo">
+    insert into livecourse_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="liveclassname != null">
+        liveclassname,
+      </if>
+      <if test="starttime != null">
+        starttime,
+      </if>
+      <if test="finshtime != null">
+        finshtime,
+      </if>
+      <if test="liveurl != null">
+        liveurl,
+      </if>
+      <if test="courseid != null">
+        courseid,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="value1 != null">
+        value1,
+      </if>
+      <if test="value2 != null">
+        value2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="liveclassname != null">
+        #{liveclassname,jdbcType=VARCHAR},
+      </if>
+      <if test="starttime != null">
+        #{starttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finshtime != null">
+        #{finshtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="liveurl != null">
+        #{liveurl,jdbcType=VARCHAR},
+      </if>
+      <if test="courseid != null">
+        #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        #{value2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.learn.model.liveCourseInfo">
+    update livecourse_info
+    <set>
+      <if test="liveclassname != null">
+        liveclassname = #{liveclassname,jdbcType=VARCHAR},
+      </if>
+      <if test="starttime != null">
+        starttime = #{starttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finshtime != null">
+        finshtime = #{finshtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="liveurl != null">
+        liveurl = #{liveurl,jdbcType=VARCHAR},
+      </if>
+      <if test="courseid != null">
+        courseid = #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="value1 != null">
+        value1 = #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        value2 = #{value2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.learn.model.liveCourseInfo">
+    update livecourse_info
+    set liveclassname = #{liveclassname,jdbcType=VARCHAR},
+      starttime = #{starttime,jdbcType=TIMESTAMP},
+      finshtime = #{finshtime,jdbcType=TIMESTAMP},
+      liveurl = #{liveurl,jdbcType=VARCHAR},
+      courseid = #{courseid,jdbcType=INTEGER},
+      userid = #{userid,jdbcType=INTEGER},
+      value1 = #{value1,jdbcType=VARCHAR},
+      value2 = #{value2,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
